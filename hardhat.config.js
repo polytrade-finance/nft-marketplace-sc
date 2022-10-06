@@ -2,22 +2,20 @@ require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 require('./tasks/deploy.js');
 
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
-const ACCOUNT_PRIVATE_KEY = process.env.ACCOUNT_PRIVATE_KEY;
-const MUMBAI_API_KEY = process.env.MUMBAI_API_KEY;
+const { default: CONSTANTS } = require('./configs/constants.js');
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: '0.8.17',
   networks: {
     mumbai: {
-      url: MUMBAI_RPC_URL,
-      accounts: [`0x${ACCOUNT_PRIVATE_KEY}`],
+      url: CONSTANTS.MUMBAI_RPC_URL,
+      accounts: [`0x${CONSTANTS.ACCOUNT_PRIVATE_KEY}`],
     },
   },
   etherscan: {
     apiKey: {
-      polygonMumbai: MUMBAI_API_KEY,
+      polygonMumbai: CONSTANTS.MUMBAI_API_KEY,
     },
   },
 };
