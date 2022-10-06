@@ -7,7 +7,9 @@
     "test": "npx hardhat test",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:coverage": "npx hardhat coverage",
+    "compile": "npx hardhat compile"
   },
   "repository": {
     "type": "git",
