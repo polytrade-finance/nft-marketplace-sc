@@ -4,7 +4,12 @@
   "description": "Smart Contracts for NFT Marketplace",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "prepare": "husky install",
+    "test:coverage": "npx hardhat coverage",
+    "compile": "npx hardhat compile"
   },
   "repository": {
     "type": "git",
@@ -19,6 +24,23 @@
   "homepage": "https://github.com/polytrade-finance/nft-marketplace-sc#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-    "hardhat": "^2.11.2"
+    "@nomiclabs/hardhat-ethers": "^2.1.1",
+    "@openzeppelin/hardhat-upgrades": "^1.21.0",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "ethers": "^5.7.1",
+    "hardhat": "^2.11.2",
+    "husky": "^7.0.4",
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.24"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "dotenv": "^16.0.3",
+    "moment": "^2.29.4",
+    "solhint": "^3.3.7"
   }
 }
