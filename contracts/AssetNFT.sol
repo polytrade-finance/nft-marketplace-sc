@@ -33,14 +33,14 @@ contract AssetNFT is ERC721, IAssetNFT {
      * @param _tokenId The unique uint token ID of the newly minted NFT
      * @param _metadata Struct of type Metadata contains add metadata need to be verified
      */
-    function mint(
+    function createAsset(
         address _receiver,
         uint _tokenId,
         Metadata memory _metadata
     ) external {
         metadata[_tokenId] = _metadata;
 
-        emit Mint(msg.sender, _receiver, _tokenId, _metadata);
+        emit AssetCreate(msg.sender, _receiver, _tokenId);
 
         _mint(_receiver, _tokenId);
     }

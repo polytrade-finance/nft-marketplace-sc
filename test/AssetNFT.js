@@ -30,7 +30,7 @@ describe('AssetNFT', function () {
     it('Minting a new AssetNFT to the owner - Check balance of the owner', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, _tokenId, _metadata);
+      await nft.createAsset(owner.address, _tokenId, _metadata);
 
       expect(await nft.balanceOf(owner.address)).to.equal(1);
     });
@@ -38,7 +38,7 @@ describe('AssetNFT', function () {
     it('Minting a new AssetNFT to the owner - Check the ownership of the new NFT', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, _tokenId, _metadata);
+      await nft.createAsset(owner.address, _tokenId, _metadata);
 
       expect(await nft.ownerOf(_tokenId)).to.equal(owner.address);
     });
@@ -46,7 +46,7 @@ describe('AssetNFT', function () {
     it('Minting a new AssetNFT to the owner - Check the metadata', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, _tokenId, _metadata);
+      await nft.createAsset(owner.address, _tokenId, _metadata);
 
       const metadata = await nft.metadata(_tokenId);
 
@@ -65,10 +65,10 @@ describe('AssetNFT', function () {
     it('Minting an AssetNFT with the same token id twice will revert', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, _tokenId, _metadata);
+      await nft.createAsset(owner.address, _tokenId, _metadata);
 
       await expect(
-        nft.mint(owner.address, _tokenId, _metadata),
+        nft.createAsset(owner.address, _tokenId, _metadata),
       ).to.be.revertedWith('ERC721: token already minted');
     });
   });
