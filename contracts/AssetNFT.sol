@@ -38,16 +38,7 @@ contract AssetNFT is ERC721, IAssetNFT {
         uint _tokenId,
         Metadata memory _metadata
     ) public {
-        metadata.factoringFee = _metadata.factoringFee;
-        metadata.discountingFee = _metadata.discountingFee;
-        metadata.financedTenure = _metadata.financedTenure;
-        metadata.advancedPercentage = _metadata.advancedPercentage;
-        metadata.reservePercentage = _metadata.reservePercentage;
-        metadata.gracePeriod = _metadata.gracePeriod;
-        metadata.lateFeePercentage = _metadata.lateFeePercentage;
-        metadata.invoiceAmount = _metadata.invoiceAmount;
-        metadata.availableAmount = _metadata.availableAmount;
-        metadata.bankCharges = _metadata.bankCharges;
+        metadata[_tokenId] = _metadata;
         _mint(_receiver, _tokenId);
     }
 }

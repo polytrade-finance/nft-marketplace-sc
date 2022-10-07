@@ -12,6 +12,16 @@ interface IAssetNFT is IERC721 {
     /**
      * @title A new struct to define the metadata structure
      * @dev Defining a new type of struct called Metadata to store the asset metadata
+     * @param factoringFee is a uint16 will have 2 decimals
+     * @param discountingFee is a uint16 will have 2 decimals
+     * @param financedTenure is a uint16 will be without decimals
+     * @param advancedPercentage is a uint16 will have 2 decimals
+     * @param reservePercentage is a uint16 will have 2 decimals
+     * @param gracePeriod is a uint16 will have 2 decimals
+     * @param lateFeePercentage is a uint16 will have 2 decimals
+     * @param invoiceAmount is a uint will have 6 decimals
+     * @param availableAmount is a uint will have 6 decimals
+     * @param bankCharges is a uint will have 6 decimals
      */
     struct Metadata {
         uint16 factoringFee;
@@ -25,4 +35,13 @@ interface IAssetNFT is IERC721 {
         uint availableAmount;
         uint bankCharges;
     }
+
+    /**
+     * @dev Mint a new AssetNFT token
+     */
+    function mint(
+        address _receiver,
+        uint _tokenId,
+        Metadata memory _metadata
+    ) external;
 }

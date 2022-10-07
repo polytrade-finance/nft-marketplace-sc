@@ -4,8 +4,10 @@ const { expect } = require('chai');
 const hre = require('hardhat');
 const { default: CONTRACTS } = require('../configs/contracts.js');
 
-describe('NFT', function () {
+describe('AssetNFT', function () {
   const _metadata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const _tokenId = 0;
+
   async function deploy() {
     const [owner, otherAddress] = await hre.ethers.getSigners();
 
@@ -25,28 +27,28 @@ describe('NFT', function () {
   });
 
   describe('Mint', function () {
-    it('Minting a new NFT with to the owner - Check balance of the owner', async function () {
+    it('Minting a new AssetNFT to the owner - Check balance of the owner', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, 0, _metadata);
+      await nft.mint(owner.address, _tokenId, _metadata);
 
       expect(await nft.balanceOf(owner.address)).to.equal(1);
     });
 
-    it('Minting a new NFT with to the owner - Check the ownership of the new NFT', async function () {
+    it('Minting a new AssetNFT to the owner - Check the ownership of the new NFT', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, 0, _metadata);
+      await nft.mint(owner.address, _tokenId, _metadata);
 
-      expect(await nft.ownerOf(0)).to.equal(owner.address);
+      expect(await nft.ownerOf(_tokenId)).to.equal(owner.address);
     });
 
-    it('Minting a new NFT with to the owner - Check the metadata', async function () {
+    it('Minting a new AssetNFT to the owner - Check the metadata', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, 0, _metadata);
+      await nft.mint(owner.address, _tokenId, _metadata);
 
-      const metadata = await nft.metadata();
+      const metadata = await nft.metadata(_tokenId);
 
       expect(metadata.factoringFee).to.equal(_metadata[0]);
       expect(metadata.discountingFee).to.equal(_metadata[1]);
@@ -60,14 +62,14 @@ describe('NFT', function () {
       expect(metadata.bankCharges).to.equal(_metadata[9]);
     });
 
-    it('Minting NFT with the same token id twice will revert', async function () {
+    it('Minting an AssetNFT with the same token id twice will revert', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
-      await nft.mint(owner.address, 0, _metadata);
+      await nft.mint(owner.address, _tokenId, _metadata);
 
-      await expect(nft.mint(owner.address, 0, _metadata)).to.be.revertedWith(
-        'ERC721: token already minted',
-      );
+      await expect(
+        nft.mint(owner.address, _tokenId, _metadata),
+      ).to.be.revertedWith('ERC721: token already minted');
     });
   });
 });
