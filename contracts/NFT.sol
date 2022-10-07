@@ -42,4 +42,28 @@ contract NFT is ERC721 {
     {
         _name;
     }
+
+    /**
+     * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
+     * @param _receiver The receiver address of the newly minted NFT
+     * @param _tokenId The unique uint token ID of the newly minted NFT
+     * @param _metadata Struct of type Metadata contains add metadata need to be verified
+     */
+    function mint(
+        address _receiver,
+        uint _tokenId,
+        Metadata memory _metadata
+    ) public {
+        metadata.factoringFee = _metadata.factoringFee;
+        metadata.discountingFee = _metadata.discountingFee;
+        metadata.financedTenure = _metadata.financedTenure;
+        metadata.advancedPercentage = _metadata.advancedPercentage;
+        metadata.reservePercentage = _metadata.reservePercentage;
+        metadata.gracePeriod = _metadata.gracePeriod;
+        metadata.lateFeePercentage = _metadata.lateFeePercentage;
+        metadata.invoiceAmount = _metadata.invoiceAmount;
+        metadata.availableAmount = _metadata.availableAmount;
+        metadata.bankCharges = _metadata.bankCharges;
+        _mint(_receiver, _tokenId);
+    }
 }
