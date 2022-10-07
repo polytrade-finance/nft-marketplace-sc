@@ -4,12 +4,12 @@
   "description": "Smart Contracts for NFT Marketplace",
   "main": "index.js",
   "scripts": {
+    "compile": "npx hardhat compile",
     "test": "npx hardhat test",
+    "test:coverage": "npx hardhat coverage",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
-    "prepare": "husky install",
-    "test:coverage": "npx hardhat coverage",
-    "compile": "npx hardhat compile"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",

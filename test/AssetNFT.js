@@ -7,6 +7,8 @@ const { default: CONTRACTS } = require('../configs/contracts.js');
 describe('AssetNFT', function () {
   const _metadata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const _tokenId = 0;
+  const _tokenIndex = 0;
+  const _wrongTokenIndex = 1;
 
   async function deploy() {
     const [owner, otherAddress] = await hre.ethers.getSigners();
@@ -62,6 +64,24 @@ describe('AssetNFT', function () {
       expect(metadata.bankCharges).to.equal(_metadata[9]);
     });
 
+    it('Minting a new AssetNFT to the other address - Check the token by index', async function () {
+      const { nft, otherAddress } = await loadFixture(deploy);
+
+      await nft.createAsset(otherAddress.address, _tokenId, _metadata);
+
+      expect(await nft.tokenByIndex(_tokenIndex)).to.equal(_tokenId);
+    });
+
+    it('Minting a new AssetNFT to the other address - Check the token of owner by index', async function () {
+      const { nft, otherAddress } = await loadFixture(deploy);
+
+      await nft.createAsset(otherAddress.address, _tokenId, _metadata);
+
+      expect(
+        await nft.tokenOfOwnerByIndex(otherAddress.address, _tokenIndex),
+      ).to.equal(_tokenId);
+    });
+
     it('Failed - Minting a new AssetNFT with the same token id twice', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
@@ -73,13 +93,33 @@ describe('AssetNFT', function () {
     });
 
     it('Failed - Minting a new AssetNFT by another address than the owner', async function () {
-      const { nft, owner, otherAddress } = await loadFixture(deploy);
+      const { nft, otherAddress } = await loadFixture(deploy);
 
       await expect(
         nft
           .connect(otherAddress)
           .createAsset(otherAddress.address, _tokenId, _metadata),
       ).to.be.rejectedWith('Ownable: caller is not the owner');
+    });
+
+    it('Failed - Minting a new AssetNFT to another address and check the token index', async function () {
+      const { nft, otherAddress } = await loadFixture(deploy);
+
+      await nft.createAsset(otherAddress.address, _tokenId, _metadata);
+
+      await expect(nft.tokenByIndex(_wrongTokenIndex)).to.be.rejectedWith(
+        'ERC721Enumerable: global index out of bounds',
+      );
+    });
+
+    it('Failed - Minting a new AssetNFT to another address and check the token index by owner', async function () {
+      const { nft, otherAddress } = await loadFixture(deploy);
+
+      await nft.createAsset(otherAddress.address, _tokenId, _metadata);
+
+      await expect(
+        nft.tokenOfOwnerByIndex(otherAddress.address, _wrongTokenIndex),
+      ).to.be.rejectedWith('ERC721Enumerable: owner index out of bounds');
     });
   });
 });
