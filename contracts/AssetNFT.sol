@@ -2,6 +2,7 @@
 pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./IAssetNFT.sol";
 
 /**
  * @title A simple ERC721 token
@@ -9,28 +10,11 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension
  */
-contract NFT is ERC721 {
+contract AssetNFT is ERC721, IAssetNFT {
     /**
-     * @title A new struct to define the metadata structure
-     * @dev Defining a new type of struct called Metadata to store the asset metadata
+     * @dev Mapping will be indexing the metadata for each AssetNFT by its token ID
      */
-    struct Metadata {
-        uint16 factoringFee;
-        uint16 discountingFee;
-        uint16 financedTenure;
-        uint16 advancedPercentage;
-        uint16 reservePercentage;
-        uint16 gracePeriod;
-        uint16 lateFeePercentage;
-        uint invoiceAmount;
-        uint availableAmount;
-        uint bankCharges;
-    }
-
-    /**
-     * @dev Metadata struct and public, we can read it from the smart contract and get the asset metadata
-     */
-    Metadata public metadata;
+    mapping(uint => Metadata) public metadata;
 
     /**
      * @dev Constructor will call the parent one to create an ERC721 with specific name and symbol
