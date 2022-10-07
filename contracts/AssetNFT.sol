@@ -9,9 +9,9 @@ import "./IAssetNFT.sol";
 /**
  * @title A simple ERC721 token
  * @author Polytrade.Finance
- * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
- * the Metadata extension
+ * @dev Implementation of Non-Fungible Token Standard, including the Metadata extension
  * @custom:access Accessible only by the owner
+ * @custom:indexing Enumerable token can be indexed
  */
 contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     /**
