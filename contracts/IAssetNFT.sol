@@ -12,6 +12,16 @@ interface IAssetNFT is IERC721 {
     /**
      * @title A new struct to define the metadata structure
      * @dev Defining a new type of struct called Metadata to store the asset metadata
+     * @param factoringFee is a uint16 will have 2 decimals
+     * @param discountingFee is a uint16 will have 2 decimals
+     * @param financedTenure is a uint16 will be without decimals
+     * @param advancedPercentage is a uint16 will have 2 decimals
+     * @param reservePercentage is a uint16 will have 2 decimals
+     * @param gracePeriod is a uint16 will have 2 decimals
+     * @param lateFeePercentage is a uint16 will have 2 decimals
+     * @param invoiceAmount is a uint will have 6 decimals
+     * @param availableAmount is a uint will have 6 decimals
+     * @param bankCharges is a uint will have 6 decimals
      */
     struct Metadata {
         uint16 factoringFee;
@@ -25,4 +35,28 @@ interface IAssetNFT is IERC721 {
         uint availableAmount;
         uint bankCharges;
     }
+
+    /**
+     * @dev Emitted when `_tokenId` token with `_metadata` is minted from the `_creator` to the `_receiver`
+     * @param _creator The address of the contract that minted this token
+     * @param _receiver The address of the receiver of this token
+     * @param _tokenId The uint id of the newly minted token
+     */
+    event AssetCreate(
+        address indexed _creator,
+        address indexed _receiver,
+        uint _tokenId
+    );
+
+    /**
+     * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
+     * @param _receiver The receiver address of the newly minted NFT
+     * @param _tokenId The unique uint token ID of the newly minted NFT
+     * @param _metadata Struct of asset metadata
+     */
+    function createAsset(
+        address _receiver,
+        uint _tokenId,
+        Metadata memory _metadata
+    ) external;
 }

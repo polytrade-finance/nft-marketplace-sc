@@ -26,4 +26,22 @@ contract AssetNFT is ERC721, IAssetNFT {
     {
         _name;
     }
+
+    /**
+     * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
+     * @param _receiver The receiver address of the newly minted NFT
+     * @param _tokenId The unique uint token ID of the newly minted NFT
+     * @param _metadata Struct of type Metadata contains add metadata need to be verified
+     */
+    function createAsset(
+        address _receiver,
+        uint _tokenId,
+        Metadata memory _metadata
+    ) external {
+        metadata[_tokenId] = _metadata;
+
+        emit AssetCreate(msg.sender, _receiver, _tokenId);
+
+        _mint(_receiver, _tokenId);
+    }
 }
