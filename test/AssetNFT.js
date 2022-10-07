@@ -62,7 +62,7 @@ describe('AssetNFT', function () {
       expect(metadata.bankCharges).to.equal(_metadata[9]);
     });
 
-    it('Minting an AssetNFT with the same token id twice will revert', async function () {
+    it('Failed - Minting a new AssetNFT with the same token id twice', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
       await nft.createAsset(owner.address, _tokenId, _metadata);
@@ -70,6 +70,16 @@ describe('AssetNFT', function () {
       await expect(
         nft.createAsset(owner.address, _tokenId, _metadata),
       ).to.be.revertedWith('ERC721: token already minted');
+    });
+
+    it('Failed - Minting a new AssetNFT by another address than the owner', async function () {
+      const { nft, owner, otherAddress } = await loadFixture(deploy);
+
+      await expect(
+        nft
+          .connect(otherAddress)
+          .createAsset(otherAddress.address, _tokenId, _metadata),
+      ).to.be.rejectedWith('Ownable: caller is not the owner');
     });
   });
 });

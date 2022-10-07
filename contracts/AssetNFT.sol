@@ -2,6 +2,7 @@
 pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IAssetNFT.sol";
 
 /**
@@ -9,8 +10,10 @@ import "./IAssetNFT.sol";
  * @author Polytrade.Finance
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension
+ * @custom:access This contract is ownable that means some function will not be able to execute except
+ * by the owner
  */
-contract AssetNFT is ERC721, IAssetNFT {
+contract AssetNFT is ERC721, IAssetNFT, Ownable {
     /**
      * @dev Mapping will be indexing the metadata for each AssetNFT by its token ID
      */
@@ -37,7 +40,7 @@ contract AssetNFT is ERC721, IAssetNFT {
         address _receiver,
         uint _tokenId,
         Metadata memory _metadata
-    ) external {
+    ) external onlyOwner {
         metadata[_tokenId] = _metadata;
 
         emit AssetCreate(msg.sender, _receiver, _tokenId);
