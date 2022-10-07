@@ -10,18 +10,36 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
  * the Metadata extension
  */
 contract NFT is ERC721 {
+    /**
+     * @title A new struct to define the metadata structure
+     * @dev Defining a new type of struct called Metadata to store the asset metadata
+     */
+    struct Metadata {
+        uint16 factoringFee;
+        uint16 discountingFee;
+        uint16 financedTenure;
+        uint16 advancedPercentage;
+        uint16 reservePercentage;
+        uint16 gracePeriod;
+        uint16 lateFeePercentage;
+        uint invoiceAmount;
+        uint availableAmount;
+        uint bankCharges;
+    }
+
+    /**
+     * @dev Metadata struct and public, we can read it from the smart contract and get the asset metadata
+     */
+    Metadata public metadata;
+
+    /**
+     * @dev Constructor will call the parent one to create an ERC721 with specific name and symbol
+     * @param _name String defining the name of the new ERC721 token
+     * @param _symbol String defining the symbol of the new ERC721 token
+     */
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {
         _name;
-    }
-
-    /**
-     * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
-     * @param _receiver The receiver address of the newly minted NFT
-     * @param _tokenId The unique uint token ID of the newly minted NFT
-     */
-    function mint(address _receiver, uint _tokenId) public {
-        _mint(_receiver, _tokenId);
     }
 }
