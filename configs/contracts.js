@@ -1,4 +1,4 @@
-const NAMES = ['NFT'];
+const NAMES = ['AssetNFT'];
 const NFT_NAME = 'Polytrade';
 const NFT_SYMBOL = 'TRADE';
 
