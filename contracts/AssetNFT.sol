@@ -37,7 +37,7 @@ contract AssetNFT is ERC721, IAssetNFT {
         address _receiver,
         uint _tokenId,
         Metadata memory _metadata
-    ) public {
+    ) external {
         metadata[_tokenId] = _metadata;
         _mint(_receiver, _tokenId);
     }
