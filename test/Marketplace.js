@@ -32,7 +32,12 @@ describe('Marketplace', function () {
 
       expect(await nft.ownerOf(_tokenId)).to.equal(owner.address);
 
-      await nft.transferFrom(owner.address, marketplace.address, _tokenId);
+      // This is the syntax of calling overloaded functions
+      await nft['safeTransferFrom(address,address,uint256)'](
+        owner.address,
+        marketplace.address,
+        _tokenId,
+      );
 
       expect(await nft.ownerOf(_tokenId)).to.equal(marketplace.address);
     });
