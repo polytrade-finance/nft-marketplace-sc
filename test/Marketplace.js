@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const { loadFixture } = require('@nomicfoundation/hardhat-network-helpers');
 const { expect } = require('chai');
 const hre = require('hardhat');
