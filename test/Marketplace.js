@@ -87,7 +87,7 @@ describe('Marketplace', function () {
           nonReceiverMarketplace.address,
           _tokenId,
         ),
-      ).to.be.rejectedWith(
+      ).to.be.revertedWith(
         'ERC721: transfer to non ERC721Receiver implementer',
       );
     });

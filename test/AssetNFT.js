@@ -101,7 +101,7 @@ describe('AssetNFT', function () {
         nft
           .connect(otherAddress)
           .createAsset(otherAddress.address, _tokenId, _metadata),
-      ).to.be.rejectedWith('Ownable: caller is not the owner');
+      ).to.be.revertedWith('Ownable: caller is not the owner');
     });
 
     it('Minting a new AssetNFT to another address and check the token index', async function () {
@@ -109,7 +109,7 @@ describe('AssetNFT', function () {
 
       await nft.createAsset(otherAddress.address, _tokenId, _metadata);
 
-      await expect(nft.tokenByIndex(_wrongTokenIndex)).to.be.rejectedWith(
+      await expect(nft.tokenByIndex(_wrongTokenIndex)).to.be.revertedWith(
         'ERC721Enumerable: global index out of bounds',
       );
     });
@@ -121,7 +121,7 @@ describe('AssetNFT', function () {
 
       await expect(
         nft.tokenOfOwnerByIndex(otherAddress.address, _wrongTokenIndex),
-      ).to.be.rejectedWith('ERC721Enumerable: owner index out of bounds');
+      ).to.be.revertedWith('ERC721Enumerable: owner index out of bounds');
     });
   });
 });

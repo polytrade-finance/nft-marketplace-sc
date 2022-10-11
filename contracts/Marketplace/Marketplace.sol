@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 /**
@@ -22,15 +21,11 @@ contract Marketplace is IERC721Receiver {
      * The selector can be obtained in Solidity with `IERC721Receiver.onERC721Received.selector`.
      */
     function onERC721Received(
-        address operator,
-        address from,
-        uint tokenId,
-        bytes calldata data
+        address,
+        address,
+        uint,
+        bytes calldata
     ) external pure override returns (bytes4) {
-        operator;
-        from;
-        tokenId;
-        data;
         return this.onERC721Received.selector;
     }
 }
