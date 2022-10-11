@@ -28,7 +28,7 @@ describe('AssetNFT', function () {
     });
   });
 
-  describe('Mint', function () {
+  describe('Statement', function () {
     it('Minting a new AssetNFT to the owner - Check balance of the owner', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
@@ -81,8 +81,10 @@ describe('AssetNFT', function () {
         await nft.tokenOfOwnerByIndex(otherAddress.address, _tokenIndex),
       ).to.equal(_tokenId);
     });
+  });
 
-    it('Failed - Minting a new AssetNFT with the same token id twice', async function () {
+  describe('Failed', function () {
+    it('Minting a new AssetNFT with the same token id twice', async function () {
       const { nft, owner } = await loadFixture(deploy);
 
       await nft.createAsset(owner.address, _tokenId, _metadata);
@@ -92,7 +94,7 @@ describe('AssetNFT', function () {
       ).to.be.revertedWith('ERC721: token already minted');
     });
 
-    it('Failed - Minting a new AssetNFT by another address than the owner', async function () {
+    it('Minting a new AssetNFT by another address than the owner', async function () {
       const { nft, otherAddress } = await loadFixture(deploy);
 
       await expect(
@@ -102,7 +104,7 @@ describe('AssetNFT', function () {
       ).to.be.rejectedWith('Ownable: caller is not the owner');
     });
 
-    it('Failed - Minting a new AssetNFT to another address and check the token index', async function () {
+    it('Minting a new AssetNFT to another address and check the token index', async function () {
       const { nft, otherAddress } = await loadFixture(deploy);
 
       await nft.createAsset(otherAddress.address, _tokenId, _metadata);
@@ -112,7 +114,7 @@ describe('AssetNFT', function () {
       );
     });
 
-    it('Failed - Minting a new AssetNFT to another address and check the token index by owner', async function () {
+    it('Minting a new AssetNFT to another address and check the token index by owner', async function () {
       const { nft, otherAddress } = await loadFixture(deploy);
 
       await nft.createAsset(otherAddress.address, _tokenId, _metadata);

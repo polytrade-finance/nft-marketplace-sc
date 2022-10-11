@@ -8,25 +8,36 @@ describe('Marketplace', function () {
   const _tokenId = 0;
 
   async function deploy() {
+    const [owner, otherAddress] = await hre.ethers.getSigners();
     const Marketplace = await hre.ethers.getContractFactory(CONTRACTS.NAMES[1]);
     const marketplace = await Marketplace.deploy();
 
-    return { marketplace };
-  }
-
-  async function deployToken() {
-    const [owner, otherAddress] = await hre.ethers.getSigners();
+    const NonReceiverMarketplace = await hre.ethers.getContractFactory(
+      CONTRACTS.NAMES[2],
+    );
+    const nonReceiverMarketplace = await NonReceiverMarketplace.deploy();
 
     const NFT = await hre.ethers.getContractFactory(CONTRACTS.NAMES[0]);
     const nft = await NFT.deploy(CONTRACTS.NFT_NAME, CONTRACTS.NFT_SYMBOL);
 
-    return { nft, owner, otherAddress };
+    return { nft, marketplace, nonReceiverMarketplace, owner, otherAddress };
   }
 
-  describe('Deployment', function () {
-    it('Marketplace should be able to receive AssetNFTs', async function () {
-      const { marketplace } = await loadFixture(deploy);
-      const { nft, owner } = await loadFixture(deployToken);
+  describe('Statements', function () {
+    it('Marketplace should be able to receive AssetNFTs - transferFrom', async function () {
+      const { nft, owner, marketplace } = await loadFixture(deploy);
+
+      await nft.createAsset(owner.address, _tokenId, _metadata);
+
+      expect(await nft.ownerOf(_tokenId)).to.equal(owner.address);
+
+      await nft.transferFrom(owner.address, marketplace.address, _tokenId);
+
+      expect(await nft.ownerOf(_tokenId)).to.equal(marketplace.address);
+    });
+
+    it('Marketplace should be able to receive AssetNFTs - safeTransferFrom', async function () {
+      const { nft, owner, marketplace } = await loadFixture(deploy);
 
       await nft.createAsset(owner.address, _tokenId, _metadata);
 
@@ -40,6 +51,45 @@ describe('Marketplace', function () {
       );
 
       expect(await nft.ownerOf(_tokenId)).to.equal(marketplace.address);
+    });
+
+    it('Non receiver marketplace should be able to receive AssetNFTs - transferFrom', async function () {
+      const { nft, owner, nonReceiverMarketplace } = await loadFixture(deploy);
+
+      await nft.createAsset(owner.address, _tokenId, _metadata);
+
+      expect(await nft.ownerOf(_tokenId)).to.equal(owner.address);
+
+      // This is the syntax of calling overloaded functions
+      await nft.transferFrom(
+        owner.address,
+        nonReceiverMarketplace.address,
+        _tokenId,
+      );
+
+      expect(await nft.ownerOf(_tokenId)).to.equal(
+        nonReceiverMarketplace.address,
+      );
+    });
+  });
+
+  describe('Failed', function () {
+    it('Safe transfer AssetNFT to non-receiver address', async function () {
+      const { nft, owner, nonReceiverMarketplace } = await loadFixture(deploy);
+
+      await nft.createAsset(owner.address, _tokenId, _metadata);
+
+      expect(await nft.ownerOf(_tokenId)).to.equal(owner.address);
+
+      await expect(
+        nft['safeTransferFrom(address,address,uint256)'](
+          owner.address,
+          nonReceiverMarketplace.address,
+          _tokenId,
+        ),
+      ).to.be.rejectedWith(
+        'ERC721: transfer to non ERC721Receiver implementer',
+      );
     });
   });
 });
