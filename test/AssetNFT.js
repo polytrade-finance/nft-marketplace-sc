@@ -5,7 +5,7 @@ const hre = require('hardhat');
 const { default: CONTRACTS } = require('../configs/contracts.js');
 
 describe('AssetNFT', function () {
-  const _metadata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const _metadata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   const _tokenId = 0;
   const _tokenIndex = 0;
   const _wrongTokenIndex = 1;
@@ -52,16 +52,19 @@ describe('AssetNFT', function () {
 
       const metadata = await nft.metadata(_tokenId);
 
-      expect(metadata.factoringFee).to.equal(_metadata[0]);
-      expect(metadata.discountingFee).to.equal(_metadata[1]);
-      expect(metadata.financedTenure).to.equal(_metadata[2]);
-      expect(metadata.advancedPercentage).to.equal(_metadata[3]);
-      expect(metadata.reservePercentage).to.equal(_metadata[4]);
-      expect(metadata.gracePeriod).to.equal(_metadata[5]);
-      expect(metadata.lateFeePercentage).to.equal(_metadata[6]);
-      expect(metadata.invoiceAmount).to.equal(_metadata[7]);
-      expect(metadata.availableAmount).to.equal(_metadata[8]);
-      expect(metadata.bankCharges).to.equal(_metadata[9]);
+      expect(metadata.initialMetadata.factoringFee).to.equal(_metadata[0]);
+      expect(metadata.initialMetadata.discountFee).to.equal(_metadata[1]);
+      expect(metadata.initialMetadata.lateFee).to.equal(_metadata[2]);
+      expect(metadata.initialMetadata.bankChargesAdditionalFee).to.equal(
+        _metadata[3],
+      );
+      expect(metadata.initialMetadata.gracePeriod).to.equal(_metadata[4]);
+      expect(metadata.initialMetadata.advanceRatio).to.equal(_metadata[5]);
+      expect(metadata.initialMetadata.dueDate).to.equal(_metadata[6]);
+      expect(metadata.initialMetadata.invoiceDate).to.equal(_metadata[7]);
+      expect(metadata.initialMetadata.fundsAdvancedDate).to.equal(_metadata[8]);
+      expect(metadata.initialMetadata.invoiceAmount).to.equal(_metadata[9]);
+      expect(metadata.initialMetadata.invoiceLimit).to.equal(_metadata[10]);
     });
 
     it('Minting a new AssetNFT to the other address - Check the token by index', async function () {

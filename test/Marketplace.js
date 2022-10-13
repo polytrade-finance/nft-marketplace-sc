@@ -4,7 +4,7 @@ const hre = require('hardhat');
 const { default: CONTRACTS } = require('../configs/contracts.js');
 
 describe('Marketplace', function () {
-  const _metadata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const _metadata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   const _tokenId = 0;
 
   async function deploy() {
