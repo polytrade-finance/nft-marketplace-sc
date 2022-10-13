@@ -34,14 +34,14 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
      * @param _receiver The receiver address of the newly minted NFT
      * @param _tokenId The unique uint token ID of the newly minted NFT
-     * @param _metadata Struct of type Metadata contains add metadata need to be verified
+     * @param _initialMetadata Struct of type InitialMetadata contains add initial metadata need to be verified
      */
     function createAsset(
         address _receiver,
         uint _tokenId,
-        Metadata memory _metadata
+        InitialMetadata memory _initialMetadata
     ) external onlyOwner {
-        metadata[_tokenId] = _metadata;
+        metadata[_tokenId].initialMetadata = _initialMetadata;
 
         emit AssetCreate(msg.sender, _receiver, _tokenId);
 

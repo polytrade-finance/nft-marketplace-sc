@@ -13,27 +13,44 @@ interface IAssetNFT is IERC721 {
      * @title A new struct to define the metadata structure
      * @dev Defining a new type of struct called Metadata to store the asset metadata
      * @param factoringFee is a uint16 will have 2 decimals
-     * @param discountingFee is a uint16 will have 2 decimals
-     * @param financedTenure is a uint16 will be without decimals
-     * @param advancedPercentage is a uint16 will have 2 decimals
-     * @param reservePercentage is a uint16 will have 2 decimals
+     * @param discountFee is a uint16 will have 2 decimals
+     * @param lateFee is a uint16 will have 2 decimals
+     * @param bankChargesAdditionalFee is a uint16 will have 2 decimals
      * @param gracePeriod is a uint16 will have 2 decimals
-     * @param lateFeePercentage is a uint16 will have 2 decimals
+     * @param advanceRatio is a uint16 will have 2 decimals
+     * @param dueDate is a uint24 will have 2 decimals
+     * @param invoiceDate is a uint24 will have 2 decimals
+     * @param fundsAdvancedDate is a uint24 will have 2 decimals
      * @param invoiceAmount is a uint will have 6 decimals
-     * @param availableAmount is a uint will have 6 decimals
-     * @param bankCharges is a uint will have 6 decimals
+     * @param invoiceLimit is a uint will have 6 decimals
+     */
+    struct InitialMetadata {
+        uint16 factoringFee;
+        uint16 discountFee;
+        uint16 lateFee;
+        uint16 bankChargesAdditionalFee;
+        uint16 gracePeriod;
+        uint16 advanceRatio;
+        uint24 dueDate;
+        uint24 invoiceDate;
+        uint24 fundsAdvancedDate;
+        uint invoiceAmount;
+        uint invoiceLimit;
+    }
+
+    /**
+     * @title A new struct to define the metadata structure
+     * @dev Defining a new type of struct called Metadata to store the asset metadata
+     * @param initialMetadata is a InitialMetadata will hold all mandatory needed metadate to mint the AssetNFT
+     * @param paymentReceiptDate is a uint24 will have 2 decimals
+     * @param buyerAmountReceived is a uint will have 6 decimals
+     * @param supplierAmountReceived is a uint will have 6 decimals
      */
     struct Metadata {
-        uint16 factoringFee;
-        uint16 discountingFee;
-        uint16 financedTenure;
-        uint16 advancedPercentage;
-        uint16 reservePercentage;
-        uint16 gracePeriod;
-        uint16 lateFeePercentage;
-        uint invoiceAmount;
-        uint availableAmount;
-        uint bankCharges;
+        InitialMetadata initialMetadata;
+        uint24 paymentReceiptDate;
+        uint buyerAmountReceived;
+        uint supplierAmountReceived;
     }
 
     /**
@@ -52,11 +69,11 @@ interface IAssetNFT is IERC721 {
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
      * @param _receiver The receiver address of the newly minted NFT
      * @param _tokenId The unique uint token ID of the newly minted NFT
-     * @param _metadata Struct of asset metadata
+     * @param _initialMetadata Struct of asset initial metadata
      */
     function createAsset(
         address _receiver,
         uint _tokenId,
-        Metadata memory _metadata
+        InitialMetadata memory _initialMetadata
     ) external;
 }
