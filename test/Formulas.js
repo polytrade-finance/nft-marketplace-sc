@@ -60,7 +60,7 @@ describe('Formulas', function () {
           _precision,
         );
 
-        expect(scLateAmount).to.equal(getValues(index).lateFeeCalculation);
+        expect(scLateAmount).to.equal(getValues(index).lateAmount);
       });
 
       it('Advanced amount', async function () {
