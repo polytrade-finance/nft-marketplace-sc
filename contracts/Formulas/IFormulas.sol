@@ -1,39 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "./IFormulas.sol";
-import "hardhat/console.sol";
-
 /**
- * @title The implementation of IFormulas interface
+ * @title The main interface to calculate all formulas related to Asset NFT
  * @author Polytrade.Finance
- * @dev Implemntatio of all functions related to Asset NFT formulas
+ * @dev Collection of all functions related to Asset NFT formulas
  */
-contract Formulas is IFormulas {
-    uint private constant _PRECISION = 1E4;
-
+interface IFormulas {
     /**
      * @dev Calculate the discount amount:
      * (Discount Fee (%) * (Advanced Amount / 365) * (Finance Tenure - Late Days))
      * @return uint Amount of the Discount
-     * @param _discountFee uint24 input from user
+     * @param _discountFee uint16 input from user
      * @param _financeTenure uint16 input from user
      * @param _lateDays uint16 calculated based on user inputs
      * @param _advancedAmount uint calculated based on user inputs
      */
+
     function discountAmount(
         uint24 _discountFee,
         uint16 _financeTenure,
         uint16 _lateDays,
         uint _advancedAmount
-    ) external pure returns (uint) {
-        return
-            (((_discountFee * _advancedAmount) * (_financeTenure - _lateDays)) /
-                365) / _PRECISION;
-
-        // ((_discountFee * (_advancedAmount) * (_financeTenure - _lateDays)) /
-        // 365) / _PRECISION;
-    }
+    ) external pure returns (uint);
 
     /**
      * @dev Calculate the advanced amount: (Invoice Limit * Advance Ratio)
@@ -44,10 +33,7 @@ contract Formulas is IFormulas {
     function advancedAmount(uint _invoiceLimit, uint16 _advanceRatio)
         external
         pure
-        returns (uint)
-    {
-        return (_invoiceLimit * _advanceRatio) / _PRECISION;
-    }
+        returns (uint);
 
     /**
      * @dev Calculate the factoring amount: (Invoice Amount * Factoring Fee)
@@ -58,10 +44,7 @@ contract Formulas is IFormulas {
     function factoringAmount(uint _invoiceAmount, uint24 _factoringFee)
         external
         pure
-        returns (uint)
-    {
-        return (_invoiceAmount * _factoringFee) / _PRECISION;
-    }
+        returns (uint);
 
     /**
      * @dev Calculate the late amount: (Late Fee (%) * (Advanced Amount / 365) * Late Days)
@@ -74,9 +57,21 @@ contract Formulas is IFormulas {
         uint24 _lateFee,
         uint16 _lateDays,
         uint _advancedAmount
-    ) external pure returns (uint) {
-        return ((_lateFee * (_advancedAmount) * _lateDays) / 365) / _PRECISION;
-    }
+    ) external pure returns (uint);
+
+    /**
+     * @dev Calculate the net amount payable to the client:
+     * (Total amount received – Advanced amount – Total Fees)
+     * @return uint Net Amount Payable to the Client
+     * @param _totalAmountReceived uint calculated based on user inputs
+     * @param _advancedAmount uint calculated based on user inputs
+     * @param _totalFees uint24 calculated based on user inputs
+     */
+    function netAmountPayableToClient(
+        uint _totalAmountReceived,
+        uint _advancedAmount,
+        uint _totalFees
+    ) external pure returns (int);
 
     /**
      * @dev Calculate the number of late days: (Payment Receipt Date - Due Date - Grace Period)
@@ -90,12 +85,7 @@ contract Formulas is IFormulas {
         uint48 _paymentReceiptDate,
         uint48 _dueDate,
         uint16 _gracePeriod
-    ) external pure returns (uint16) {
-        if (_paymentReceiptDate < _dueDate) return 0;
-
-        return
-            uint16(((_paymentReceiptDate - _dueDate) / 1 days) - _gracePeriod);
-    }
+    ) external pure returns (uint16);
 
     /**
      * @dev Calculate the invoice tenure: (Due Date - Invoice Date)
@@ -106,10 +96,7 @@ contract Formulas is IFormulas {
     function invoiceTenure(uint48 _dueDate, uint48 _invoiceDate)
         external
         pure
-        returns (uint16)
-    {
-        return uint16((_dueDate - _invoiceDate) / 1 days);
-    }
+        returns (uint16);
 
     /**
      * @dev Calculate the reserve amount: (Invoice Amount - Advanced Amount)
@@ -120,10 +107,7 @@ contract Formulas is IFormulas {
     function reserveAmount(uint _invoiceAmount, uint _advancedAmount)
         external
         pure
-        returns (uint)
-    {
-        return _invoiceAmount - _advancedAmount;
-    }
+        returns (uint);
 
     /**
      * @dev Calculate the finance tenure: (Payment Receipt Date - Date of Funds Advanced)
@@ -134,9 +118,7 @@ contract Formulas is IFormulas {
     function financeTenure(
         uint48 _paymentReceiptDate,
         uint48 _fundsAdvancedDate
-    ) external pure returns (uint16) {
-        return uint16((_paymentReceiptDate - _fundsAdvancedDate) / 1 days);
-    }
+    ) external pure returns (uint16);
 
     /**
      * @dev Calculate the total fees amount:
@@ -152,30 +134,7 @@ contract Formulas is IFormulas {
         uint24 _discountAmount,
         uint24 _additionalFee,
         uint24 _bankChargesFee
-    ) external pure returns (uint) {
-        return
-            _factoringAmount +
-            _discountAmount +
-            _additionalFee +
-            _bankChargesFee;
-    }
-
-    /**
-     * @dev Calculate the net amount payable to the client:
-     * (Total amount received – Advanced amount – Total Fees)
-     * @return uint Net Amount Payable to the Client
-     * @param _totalAmountReceived uint calculated based on user inputs
-     * @param _advancedAmount uint calculated based on user inputs
-     * @param _totalFees uint24 calculated based on user inputs
-     */
-    function netAmountPayableToClient(
-        uint _totalAmountReceived,
-        uint _advancedAmount,
-        uint _totalFees
-    ) external pure returns (int) {
-        return
-            int(_totalAmountReceived) - int(_advancedAmount) - int(_totalFees);
-    }
+    ) external pure returns (uint);
 
     /**
      * @dev Calculate the total amount received:
@@ -187,7 +146,5 @@ contract Formulas is IFormulas {
     function totalAmountReceived(
         uint _buyerAmountReceived,
         uint _supplierAmountReceived
-    ) external pure returns (uint) {
-        return _buyerAmountReceived + _supplierAmountReceived;
-    }
+    ) external pure returns (uint);
 }

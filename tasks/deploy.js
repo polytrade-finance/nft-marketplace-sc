@@ -16,8 +16,8 @@ task('deploy', 'Deploy a new contract')
       const Contract = await ethers.getContractFactory(contractName);
       let contract = null;
       if (contractName === CONTRACTS.NAMES[0]) {
-        const NAME = CONTRACTS.NFT_NAME;
-        const SYMBOL = CONTRACTS.NFT_SYMBOL;
+        const NAME = CONSTANTS.NFT_NAME;
+        const SYMBOL = CONSTANTS.NFT_SYMBOL;
         contract = await Contract.deploy(NAME, SYMBOL);
       }
 

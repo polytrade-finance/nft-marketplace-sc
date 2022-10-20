@@ -1,7 +1,5 @@
-const NAMES = ['AssetNFT', 'Marketplace', 'NonReceiverMarketplace'];
-const NFT_NAME = 'Polytrade';
-const NFT_SYMBOL = 'TRADE';
+const NAMES = ['AssetNFT', 'Marketplace', 'NonReceiverMarketplace', 'Formulas'];
 
-const CONTRACTS = { NAMES, NFT_NAME, NFT_SYMBOL };
+const CONTRACTS = { NAMES };
 
 exports.default = CONTRACTS;

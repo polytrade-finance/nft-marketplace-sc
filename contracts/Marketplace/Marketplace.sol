@@ -3,6 +3,7 @@ pragma solidity ^0.8.17;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "../AssetNFT/IAssetNFT.sol";
 
 /**
  * @title The common marketplace for the AssetNFTs
@@ -11,8 +12,10 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
  * @custom:receiver Receiver contract able to receiver tokens
  */
 contract Marketplace is IERC721Receiver {
+    IAssetNFT private _assetNFT;
+
     /**
-     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
+     * @dev Whenever an {IERC721} `assetNumber` token is transferred to this contract via {IERC721-safeTransferFrom}
      * by `operator` from `from`, this function is called.
      *
      * It must return its Solidity selector to confirm the token transfer.
@@ -24,12 +27,12 @@ contract Marketplace is IERC721Receiver {
     function onERC721Received(
         address operator,
         address from,
-        uint tokenId,
+        uint assetNumber,
         bytes calldata data
     ) external pure override returns (bytes4) {
         operator;
         from;
-        tokenId;
+        assetNumber;
         data;
         return this.onERC721Received.selector;
     }
