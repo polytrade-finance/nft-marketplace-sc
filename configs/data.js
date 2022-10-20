@@ -226,7 +226,7 @@ const _financeTenure = [
   '101',
   '101', // Error
 ];
-const _lateFeeCalculation = [
+const _lateAmount = [
   '0.0',
   '7.1',
   '0.0',
@@ -390,8 +390,8 @@ exports.getCase = function getCase(caseNumber) {
     numberOfLateDays: _numberOfLateDays[caseNumber],
     financeTenure: _financeTenure[caseNumber],
     lateFee: hre.ethers.utils.parseUnits(_lateFee[caseNumber], _decimals),
-    _lateFeeCalculation: hre.ethers.utils.parseUnits(
-      _lateFeeCalculation[caseNumber],
+    _lateAmount: hre.ethers.utils.parseUnits(
+      _lateAmount[caseNumber],
       _decimals,
     ),
     discountFee: hre.ethers.utils.parseUnits(
@@ -469,7 +469,7 @@ exports.getValues = function getValues(caseNumber) {
     financeTenure: _financeTenure[caseNumber],
 
     lateFee: _lateFee[caseNumber],
-    lateFeeCalculation: _lateFeeCalculation[caseNumber],
+    lateAmount: _lateAmount[caseNumber],
 
     discountFee: _discountFee[caseNumber],
 

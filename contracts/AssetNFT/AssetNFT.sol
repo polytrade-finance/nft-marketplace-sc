@@ -30,7 +30,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {
-        _name;
+        // solhint-disable-previous-line no-empty-blocks
     }
 
     /**
@@ -57,6 +57,50 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     }
 
     /**
+     * @dev Implementation of a setter for formulas calculation instance
+     * @param _formulasAddress The address of the formulas calculation contract
+     */
+    function setFormulasContract(address _formulasAddress) external onlyOwner {
+        _formulas = IFormulas(_formulasAddress);
+    }
+
+    /**
+     * @dev Implementation of a setter for payment receipt date
+     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _paymentReceiptDate The uint48 value of the payment receipt date
+     */
+    function setPaymentReceiptDate(
+        uint _assetNumber,
+        uint48 _paymentReceiptDate
+    ) external onlyOwner {
+        metadata[_assetNumber].paymentReceiptDate = _paymentReceiptDate;
+    }
+
+    /**
+     * @dev Implementation of a setter for amount received from buyer
+     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _buyerAmountReceived The uint value of the amount received from buyer
+     */
+    function setBuyerAmountReceived(
+        uint _assetNumber,
+        uint _buyerAmountReceived
+    ) external onlyOwner {
+        metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
+    }
+
+    /**
+     * @dev Implementation of a setter for amount received from supplier
+     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _supplierAmountReceived The uint value of the amount received from supplier
+     */
+    function setSupplierAmountReceived(
+        uint _assetNumber,
+        uint _supplierAmountReceived
+    ) external onlyOwner {
+        metadata[_assetNumber].supplierAmountReceived = _supplierAmountReceived;
+    }
+
+    /**
      * @dev Implementation of a getter for asset metadata
      * @return Metadata The metadata related to a specific asset
      * @param _assetNumber The unique uint Asset Number of the newly minted NFT
@@ -74,12 +118,17 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @return uint16 Number of Late Days
      * @param _assetNumber The unique uint Asset Number of the newly minted NFT
      */
-    function calculateLateDate(uint _assetNumber)
+    function calculateLateDays(uint _assetNumber)
         external
         view
         returns (uint16)
     {
         Metadata memory assetMetadata = this.getAsset(_assetNumber);
+
+        require(
+            assetMetadata.paymentReceiptDate != 0,
+            "Payment receipt date = 0"
+        );
 
         return
             _formulas.lateDays(
@@ -100,6 +149,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint)
     {
         Metadata memory assetMetadata = this.getAsset(_assetNumber);
+
+        require(
+            assetMetadata.paymentReceiptDate != 0,
+            "Payment receipt date = 0"
+        );
 
         uint16 financeTenure = _formulas.financeTenure(
             assetMetadata.paymentReceiptDate,
@@ -137,6 +191,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint)
     {
         Metadata memory assetMetadata = this.getAsset(_assetNumber);
+
+        require(
+            assetMetadata.paymentReceiptDate != 0,
+            "Payment receipt date = 0"
+        );
 
         uint16 lateDays = _formulas.lateDays(
             assetMetadata.paymentReceiptDate,
@@ -250,6 +309,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     {
         Metadata memory assetMetadata = this.getAsset(_assetNumber);
 
+        require(
+            assetMetadata.paymentReceiptDate != 0,
+            "Payment receipt date = 0"
+        );
+
         return
             _formulas.financeTenure(
                 assetMetadata.paymentReceiptDate,
@@ -269,11 +333,14 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     {
         Metadata memory assetMetadata = this.getAsset(_assetNumber);
 
+        uint factoringAmount = this.calculateFactoringAmount(_assetNumber);
+        uint discountAmount = this.calculateDiscountAmount(_assetNumber);
+
         return
             _formulas.totalFees(
-                assetMetadata.initialMetadata.factoringFee,
-                assetMetadata.initialMetadata.discountFee,
-                assetMetadata.initialMetadata.lateFee,
+                factoringAmount,
+                discountAmount,
+                0,
                 assetMetadata.initialMetadata.bankChargesFee
             );
     }
@@ -283,7 +350,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @return uint Net Amount Payable to the Client
      * @param _assetNumber The unique uint Asset Number of the newly minted NFT
      */
-    function calculateNetAmountPayaleToClient(uint _assetNumber)
+    function calculateNetAmountPayableToClient(uint _assetNumber)
         external
         view
         returns (int)
@@ -300,12 +367,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             assetMetadata.initialMetadata.advanceRatio
         );
 
-        uint totalFees = _formulas.totalFees(
-            assetMetadata.initialMetadata.factoringFee,
-            assetMetadata.initialMetadata.discountFee,
-            assetMetadata.initialMetadata.lateFee,
-            assetMetadata.initialMetadata.bankChargesFee
-        );
+        uint totalFees = this.calculateTotalFees(_assetNumber);
 
         return
             _formulas.netAmountPayableToClient(

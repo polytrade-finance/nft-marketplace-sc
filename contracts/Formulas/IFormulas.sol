@@ -124,16 +124,16 @@ interface IFormulas {
      * @dev Calculate the total fees amount:
      * (Factoring Amount + Discount Amount + Additional Fee + Bank Charges Fee)
      * @return uint Total Amount
-     * @param _factoringAmount uint24 input from user
-     * @param _discountAmount uint24 input from user
-     * @param _additionalFee uint24 input from user
-     * @param _bankChargesFee uint24 input from user
+     * @param _factoringAmount uint input from user
+     * @param _discountAmount uint input from user
+     * @param _additionalFee uint input from user
+     * @param _bankChargesFee uint input from user
      */
     function totalFees(
-        uint24 _factoringAmount,
-        uint24 _discountAmount,
-        uint24 _additionalFee,
-        uint24 _bankChargesFee
+        uint _factoringAmount,
+        uint _discountAmount,
+        uint _additionalFee,
+        uint _bankChargesFee
     ) external pure returns (uint);
 
     /**
