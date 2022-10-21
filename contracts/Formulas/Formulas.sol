@@ -2,12 +2,11 @@
 pragma solidity ^0.8.17;
 
 import "./IFormulas.sol";
-import "hardhat/console.sol";
 
 /**
  * @title The implementation of IFormulas interface
  * @author Polytrade.Finance
- * @dev Implemntatio of all functions related to Asset NFT formulas
+ * @dev Implementation of all functions related to Asset NFT formulas
  */
 contract Formulas is IFormulas {
     uint private constant _PRECISION = 1E4;
@@ -30,9 +29,6 @@ contract Formulas is IFormulas {
         return
             (((_discountFee * _advancedAmount) * (_financeTenure - _lateDays)) /
                 365) / _PRECISION;
-
-        // ((_discountFee * (_advancedAmount) * (_financeTenure - _lateDays)) /
-        // 365) / _PRECISION;
     }
 
     /**

@@ -41,16 +41,16 @@ interface IAssetNFT is IERC721 {
     /**
      * @title A new struct to define the metadata structure
      * @dev Defining a new type of struct called Metadata to store the asset metadata
-     * @param initialMetadata is a InitialMetadata will hold all mandatory needed metadate to mint the AssetNFT
      * @param paymentReceiptDate is a uint48 will have 2 decimals
      * @param buyerAmountReceived is a uint will have 6 decimals
      * @param supplierAmountReceived is a uint will have 6 decimals
+     * @param initialMetadata is a InitialMetadata will hold all mandatory needed metadate to mint the AssetNFT
      */
     struct Metadata {
-        InitialMetadata initialMetadata;
         uint48 paymentReceiptDate;
         uint buyerAmountReceived;
         uint supplierAmountReceived;
+        InitialMetadata initialMetadata;
     }
 
     /**
@@ -68,7 +68,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
      * @param _receiver The receiver address of the newly minted NFT
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      * @param _initialMetadata Struct of asset initial metadata
      */
     function createAsset(
@@ -85,7 +85,7 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Implementation of a setter for payment receipt date
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      * @param _paymentReceiptDate The uint48 value of the payment receipt date
      */
     function setPaymentReceiptDate(
@@ -95,7 +95,7 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Implementation of a setter for amount received from buyer
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      * @param _buyerAmountReceived The uint value of the amount received from buyer
      */
     function setBuyerAmountReceived(
@@ -105,7 +105,7 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Implementation of a setter for amount received from supplier
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      * @param _supplierAmountReceived The uint value of the amount received from supplier
      */
     function setSupplierAmountReceived(
@@ -116,7 +116,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Implementation of a getter for asset metadata
      * @return Metadata The metadata related to a specific asset
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function getAsset(uint _assetNumber)
         external
@@ -126,7 +126,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the number of late days
      * @return uint16 Number of Late Days
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateLateDays(uint _assetNumber)
         external
@@ -136,7 +136,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the discount amount
      * @return uint Amount of the Discount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateDiscountAmount(uint _assetNumber)
         external
@@ -146,7 +146,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the late amount
      * @return uint Late Amount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateLateAmount(uint _assetNumber)
         external
@@ -156,7 +156,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the advanced amount
      * @return uint Advanced Amount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateAdvancedAmount(uint _assetNumber)
         external
@@ -166,7 +166,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the factoring amount
      * @return uint Factoring Amount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateFactoringAmount(uint _assetNumber)
         external
@@ -176,7 +176,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the invoice tenure
      * @return uint24 Invoice Tenure
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateInvoiceTenure(uint _assetNumber)
         external
@@ -186,7 +186,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the reserve amount
      * @return uint Reserve Amount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateReserveAmount(uint _assetNumber)
         external
@@ -196,7 +196,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the finance tenure
      * @return uint24 Finance Tenure
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateFinanceTenure(uint _assetNumber)
         external
@@ -206,14 +206,14 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the total fees amount
      * @return uint Total Amount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateTotalFees(uint _assetNumber) external view returns (uint);
 
     /**
      * @dev Calculate the net amount payable to the client
      * @return uint Net Amount Payable to the Client
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateNetAmountPayableToClient(uint _assetNumber)
         external
@@ -223,7 +223,7 @@ interface IAssetNFT is IERC721 {
     /**
      * @dev Calculate the total amount received
      * @return uint Total Received Amount
-     * @param _assetNumber The unique uint Asset Number of the newly minted NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
      */
     function calculateTotalAmountReceived(uint _assetNumber)
         external

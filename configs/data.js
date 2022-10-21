@@ -14,7 +14,7 @@ const _factoringFee = [
   '2.27',
   '2.27',
   '2.27',
-  '0.50', // Error
+  '0.50', // Error test case value
 ];
 const _discountFee = [
   '5.00',
@@ -27,7 +27,7 @@ const _discountFee = [
   '7.50',
   '7.50',
   '7.50',
-  '5.00', // Error
+  '5.00', // Error test case value
 ];
 const _lateFee = [
   '18.00',
@@ -40,7 +40,7 @@ const _lateFee = [
   '18.00',
   '18.00',
   '18.00',
-  '18.00', // Error
+  '18.00', // Error test case value
 ];
 const _bankChargesFee = [
   '10',
@@ -53,7 +53,7 @@ const _bankChargesFee = [
   '10',
   '10',
   '0',
-  '10', // Error
+  '10', // Error test case value
 ];
 const _gracePeriod = [
   '3',
@@ -66,7 +66,7 @@ const _gracePeriod = [
   '3',
   '3',
   '3',
-  '3', // Error
+  '3', // Error test case value
 ];
 const _advanceRatio = [
   '85.00',
@@ -198,7 +198,7 @@ const _paymentReceiptDate = [
   '2023-03-10',
   '2023-03-10',
   '2023-02-10',
-  '2023-02-10', // Error
+  '2023-02-10', // Error test case value
 ];
 const _numberOfLateDays = [
   '0',
@@ -211,7 +211,7 @@ const _numberOfLateDays = [
   '25',
   '56',
   '28',
-  '28', // Error
+  '28', // Error test case value
 ];
 const _financeTenure = [
   '33',
@@ -224,7 +224,7 @@ const _financeTenure = [
   '129',
   '129',
   '101',
-  '101', // Error
+  '101', // Error test case value
 ];
 const _lateAmount = [
   '0.0',
@@ -237,7 +237,7 @@ const _lateAmount = [
   '53.63',
   '154.65',
   '99.41',
-  '99.41', // Error
+  '99.41', // Error test case value
 ];
 const _discountAmount = [
   '38.42',
@@ -250,7 +250,7 @@ const _discountAmount = [
   '92.95',
   '84.0',
   '108.0',
-  '108.0', // Error
+  '108.0', // Error test case value
 ];
 const _factoringAmount = [
   '50.0',
@@ -263,7 +263,7 @@ const _factoringAmount = [
   '227.0',
   '227.0',
   '227.0',
-  '227.0', // Error
+  '227.0', // Error test case value
 ];
 const _additionalFee = [
   '0',
@@ -276,7 +276,7 @@ const _additionalFee = [
   '0',
   '0',
   '0',
-  '0', // Error
+  '0', // Error test case value
 ];
 const _totalFee = [
   '98.42',
@@ -289,7 +289,7 @@ const _totalFee = [
   '329.95',
   '321.0',
   '335.0',
-  '335.0', // Error
+  '335.0', // Error test case value
 ];
 const _netAmountPayableToClient = [
   '1401.58',
@@ -302,7 +302,7 @@ const _netAmountPayableToClient = [
   '-679.95',
   '0.0',
   '-335.0',
-  '0.0', // Error
+  '0.0', // Error test case value
 ];
 const _buyerAmountReceived = [
   '10000.0',
@@ -315,7 +315,7 @@ const _buyerAmountReceived = [
   '3500.0',
   '0.0',
   '0.0',
-  '0.0', // Error
+  '0.0', // Error test case value
 ];
 const _supplierAmountReceived = [
   '0.0',
@@ -328,7 +328,7 @@ const _supplierAmountReceived = [
   '500.0',
   '5921.0',
   '7200.0',
-  '7200.0', // Error
+  '7200.0', // Error test case value
 ];
 const _totalAmountReceived = [
   '10000.0',
@@ -341,7 +341,7 @@ const _totalAmountReceived = [
   '4000.0',
   '5921.0',
   '7200.0',
-  '7200.0', // Error
+  '7200.0', // Error test case value
 ];
 const _shortExcessPaymentReceived = [
   '0',
@@ -354,7 +354,7 @@ const _shortExcessPaymentReceived = [
   '-6000',
   '-4079',
   '-2800',
-  '1000', // Error
+  '1000', // Error test case value
 ];
 
 exports.getCase = function getCase(caseNumber) {
