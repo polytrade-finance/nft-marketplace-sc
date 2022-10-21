@@ -2,6 +2,9 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import "../AssetNFT/IAssetNFT.sol";
 
 /**
@@ -10,7 +13,7 @@ import "../AssetNFT/IAssetNFT.sol";
  * @dev Implementation of all AssetNFT trading operations
  * @custom:receiver Receiver contract able to receiver tokens
  */
-contract Marketplace is IERC721Receiver {
+contract Marketplace is IERC721Receiver, Ownable {
     IAssetNFT private _assetNFT;
 
     /**
@@ -34,5 +37,22 @@ contract Marketplace is IERC721Receiver {
         assetNumber;
         data;
         return this.onERC721Received.selector;
+    }
+
+    function setAssetNFT(address _address) public onlyOwner {
+        _assetNFT = IAssetNFT(_address);
+    }
+
+    function buy(uint _assetNumber, address _tokenAddress) public {
+        address _owner = _assetNFT.ownerOf(_assetNumber);
+        uint _amount = _assetNFT
+            .getAsset(_assetNumber)
+            .initialMetadata
+            .invoiceAmount;
+
+        _assetNFT.safeTransferFrom(_owner, msg.sender, _assetNumber);
+
+        IERC20(_tokenAddress).approve(address(this), _amount);
+        IERC20(_tokenAddress).transfer(_owner, _amount);
     }
 }
