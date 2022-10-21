@@ -21,7 +21,11 @@ describe('Marketplace', function () {
     const nonReceiverMarketplace = await NonReceiverMarketplace.deploy();
 
     const NFT = await hre.ethers.getContractFactory(CONTRACTS.NAMES[0]);
-    const nft = await NFT.deploy(CONSTANTS.NFT_NAME, CONSTANTS.NFT_SYMBOL);
+    const nft = await NFT.deploy(
+      CONSTANTS.NFT_NAME,
+      CONSTANTS.NFT_SYMBOL,
+      CONSTANTS.NFT_BASE_URI,
+    );
 
     return { nft, marketplace, nonReceiverMarketplace, owner, otherAddress };
   }
@@ -49,7 +53,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _metadata),
-          ).to.be.rejectedWith('Asset cannot be due within less than 20 days');
+          ).to.be.rejectedWith('Asset due less than 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _metadata);
 
@@ -71,7 +75,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _metadata),
-          ).to.be.rejectedWith('Asset cannot be due within less than 20 days');
+          ).to.be.rejectedWith('Asset due less than 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _metadata);
 
@@ -96,7 +100,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _metadata),
-          ).to.be.rejectedWith('Asset cannot be due within less than 20 days');
+          ).to.be.rejectedWith('Asset due less than 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _metadata);
 
@@ -125,7 +129,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _metadata),
-          ).to.be.rejectedWith('Asset cannot be due within less than 20 days');
+          ).to.be.rejectedWith('Asset due less than 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _metadata);
 
