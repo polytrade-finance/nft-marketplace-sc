@@ -66,6 +66,56 @@ interface IAssetNFT is IERC721 {
     );
 
     /**
+     * @dev Emitted when `_formulas` contract address is set to the AssetNFT by the `_setter`
+     * @param _setter The address of the contract that set the formulas address
+     * @param _formulas The address of the formulad smart contract
+     */
+    event FormulasSet(address indexed _setter, address _formulas);
+
+    /**
+     * @dev Emitted when `_paymentReceiptDate` is set to the AssetNFT number `_assetNumber` by the `_setter`
+     * @param _setter The address of the contract that set the date
+     * @param _assetNumber The uint of the asset NFT
+     * @param _paymentReceiptDate The uint48 represent the date
+     */
+    event PaymentReceiptDateSet(
+        address indexed _setter,
+        uint _assetNumber,
+        uint48 _paymentReceiptDate
+    );
+
+    /**
+     * @dev Emitted when `_buyerAmountReceived` is set to the AssetNFT number `_assetNumber` by the `_setter`
+     * @param _setter The address of the contract that set the amount receiver from the buyer
+     * @param _assetNumber The uint of the asset NFT
+     * @param _buyerAmountReceived The uint48 represent the amount received from the buyer
+     */
+    event BuyerAmountReceivedSet(
+        address indexed _setter,
+        uint _assetNumber,
+        uint _buyerAmountReceived
+    );
+
+    /**
+     * @dev Emitted when `_supplierAmountReceived` is set to the AssetNFT number `_assetNumber` by the `_setter`
+     * @param _setter The address of the contract that set the amount receiver from the supplier
+     * @param _assetNumber The uint of the asset NFT
+     * @param _supplierAmountReceived The uint48 represent the amount received from the supplier
+     */
+    event SupplierAmountReceivedSet(
+        address indexed _setter,
+        uint _assetNumber,
+        uint _supplierAmountReceived
+    );
+
+    /**
+     * @dev Emitted when `_uri` is set by the `_setter`
+     * @param _setter The address of the contract that set the amount receiver from the supplier
+     * @param _uri The new base URI
+     */
+    event BaseURISet(address indexed _setter, string _uri);
+
+    /**
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
      * @param _receiver The receiver address of the newly minted NFT
      * @param _assetNumber The unique uint Asset Number of the NFT
