@@ -43,16 +43,15 @@ contract Marketplace is IERC721Receiver, Ownable {
         _assetNFT = IAssetNFT(_address);
     }
 
-    function buy(uint _assetNumber, address _tokenAddress) public {
+    function buy(uint _assetNumber) public {
         address _owner = _assetNFT.ownerOf(_assetNumber);
-        uint _amount = _assetNFT
-            .getAsset(_assetNumber)
-            .initialMetadata
-            .invoiceAmount;
 
         _assetNFT.safeTransferFrom(_owner, msg.sender, _assetNumber);
+    }
 
-        IERC20(_tokenAddress).approve(address(this), _amount);
-        IERC20(_tokenAddress).transfer(_owner, _amount);
+    function disburse(uint _assetNumber) public view returns (int) {
+        int _amount = _assetNFT.calculateNetAmountPayableToClient(_assetNumber);
+
+        return _amount;
     }
 }
