@@ -39,16 +39,29 @@ contract Marketplace is IERC721Receiver, Ownable {
         return this.onERC721Received.selector;
     }
 
+    /**
+     * @dev Implementation of a setter for the Asset NFT
+     * @param _address The address of the Asset NFT used in the marketplace
+     */
     function setAssetNFT(address _address) public onlyOwner {
         _assetNFT = IAssetNFT(_address);
     }
 
+    /**
+     * @dev Implementation of the function used to buy Asset NFT
+     * @param _assetNumber The uint unique number of the Asset NFT
+     */
     function buy(uint _assetNumber) public {
         address _owner = _assetNFT.ownerOf(_assetNumber);
 
         _assetNFT.safeTransferFrom(_owner, msg.sender, _assetNumber);
     }
 
+    /**
+     * @dev Implementation of the function used to disbuse money
+     * @param _assetNumber The uint unique number of the Asset NFT
+     * @return int the required amount to be paied
+     */
     function disburse(uint _assetNumber) public view returns (int) {
         int _amount = _assetNFT.calculateNetAmountPayableToClient(_assetNumber);
 

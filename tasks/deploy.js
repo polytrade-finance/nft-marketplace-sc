@@ -18,7 +18,10 @@ task('deploy', 'Deploy a new contract')
       if (contractName === CONTRACTS.NAMES[0]) {
         const NAME = CONSTANTS.NFT_NAME;
         const SYMBOL = CONSTANTS.NFT_SYMBOL;
-        contract = await Contract.deploy(NAME, SYMBOL);
+        const BASE_URI = CONSTANTS.NFT_BASE_URI;
+        contract = await Contract.deploy(NAME, SYMBOL, BASE_URI);
+      } else {
+        contract = await Contract.deploy();
       }
 
       // QUESTION: Why is the following statement?
