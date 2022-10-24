@@ -25,10 +25,10 @@ describe('AssetNFT', function () {
     const nft = await NFT.deploy(
       CONSTANTS.NFT_NAME,
       CONSTANTS.NFT_SYMBOL,
-      CONSTANTS.NFT_BASE_URI,
+      formulas.address,
     );
 
-    return { nft, formulas, owner, otherAddress };
+    return { nft, owner, otherAddress };
   }
 
   describe('Deployment', function () {
@@ -47,6 +47,7 @@ describe('AssetNFT', function () {
       getCase(_caseNumber).discountFee,
       getCase(_caseNumber).lateFee,
       getCase(_caseNumber).bankChargesFee,
+      getCase(_caseNumber).additionalFee,
       getCase(_caseNumber).gracePeriod,
       getCase(_caseNumber).advanceRatio,
       getCase(_caseNumber).dueDate,
@@ -61,6 +62,9 @@ describe('AssetNFT', function () {
       getCase(_caseNumber).paymentReceiptDate,
       getCase(_caseNumber).buyerAmountReceived,
       getCase(_caseNumber).supplierAmountReceived,
+      getCase(_caseNumber).paymentReserveDate,
+      getCase(_caseNumber).supplierAmountReserved,
+      getCase(_caseNumber).reservePaymentTransactionId,
     ];
 
     describe(`Statement for test case N#${_caseNumber + 1}`, function () {
@@ -114,26 +118,29 @@ describe('AssetNFT', function () {
           expect(metadata.initialMetadata.bankChargesFee).to.equal(
             _initialMetadata[3],
           );
+          expect(metadata.initialMetadata.additionalFee).to.equal(
+            _initialMetadata[4],
+          );
           expect(metadata.initialMetadata.gracePeriod).to.equal(
-            Number(_initialMetadata[4]),
+            Number(_initialMetadata[5]),
           );
           expect(metadata.initialMetadata.advanceRatio).to.equal(
-            _initialMetadata[5],
-          );
-          expect(metadata.initialMetadata.dueDate).to.equal(
             _initialMetadata[6],
           );
-          expect(metadata.initialMetadata.invoiceDate).to.equal(
+          expect(metadata.initialMetadata.dueDate).to.equal(
             _initialMetadata[7],
           );
-          expect(metadata.initialMetadata.fundsAdvancedDate).to.equal(
+          expect(metadata.initialMetadata.invoiceDate).to.equal(
             _initialMetadata[8],
           );
-          expect(metadata.initialMetadata.invoiceAmount).to.equal(
+          expect(metadata.initialMetadata.fundsAdvancedDate).to.equal(
             _initialMetadata[9],
           );
-          expect(metadata.initialMetadata.invoiceLimit).to.equal(
+          expect(metadata.initialMetadata.invoiceAmount).to.equal(
             _initialMetadata[10],
+          );
+          expect(metadata.initialMetadata.invoiceLimit).to.equal(
+            _initialMetadata[11],
           );
         }
       });
@@ -193,9 +200,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const metadata = await nft.getAsset(_assetNumber);
 
@@ -204,13 +214,9 @@ describe('AssetNFT', function () {
           expect(metadata.supplierAmountReceived).to.equal(_metadata[3]);
         }
       });
-    });
 
-    describe(`Formulas calculation from the AssetNFT for test case N#${
-      _caseNumber + 1
-    }`, function () {
-      it('Calculate late days', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+      it('Buy an asset - check the ownership', async function () {
+        const { nft, owner, otherAddress } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -219,10 +225,42 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
+
+          await nft.buyAsset(
+            otherAddress.address,
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
+
+          expect(await nft.ownerOf(_assetNumber)).to.equal(
+            otherAddress.address,
+          );
+        }
+      });
+    });
+
+    describe(`Formulas calculation from the AssetNFT for test case N#${
+      _caseNumber + 1
+    }`, function () {
+      it('Calculate late days', async function () {
+        const { nft, owner } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due less than 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const lateDays = await nft.calculateLateDays(_assetNumber);
 
@@ -233,7 +271,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate discount amount', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -242,10 +280,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const discountAmount = hre.ethers.utils.formatUnits(
             await nft.calculateDiscountAmount(_assetNumber),
@@ -259,7 +299,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate late amount', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -268,10 +308,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const lateAmount = hre.ethers.utils.formatUnits(
             await nft.calculateLateAmount(_assetNumber),
@@ -283,7 +325,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate advanced amount', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -292,10 +334,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const advancedAmount = hre.ethers.utils.formatUnits(
             await nft.calculateAdvancedAmount(_assetNumber),
@@ -309,7 +353,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate factoring amount', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -318,10 +362,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const factoringAmount = hre.ethers.utils.formatUnits(
             await nft.calculateFactoringAmount(_assetNumber),
@@ -335,7 +381,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate invoice tenure', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -344,10 +390,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const invoiceTenure = await nft.calculateInvoiceTenure(_assetNumber);
 
@@ -358,7 +406,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate reserve amount', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -367,10 +415,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const reserveAmount = hre.ethers.utils.formatUnits(
             await nft.calculateReserveAmount(_assetNumber),
@@ -382,7 +432,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate finance tenure', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -391,10 +441,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const financeTenure = await nft.calculateFinanceTenure(_assetNumber);
 
@@ -405,7 +457,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate total fees', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -414,10 +466,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const totalFees = hre.ethers.utils.formatUnits(
             await nft.calculateTotalFees(_assetNumber),
@@ -429,7 +483,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate net amount payable to the client', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -438,10 +492,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const netAmountPayableToClient = hre.ethers.utils.formatUnits(
             await nft.calculateNetAmountPayableToClient(_assetNumber),
@@ -455,7 +511,7 @@ describe('AssetNFT', function () {
       });
 
       it('Calculate total amount received', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -464,10 +520,12 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setPaymentReceiptDate(_assetNumber, _metadata[1]);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            _metadata[1],
+          );
 
           const totalAmountReceived = hre.ethers.utils.formatUnits(
             await nft.calculateTotalAmountReceived(_assetNumber),
@@ -477,6 +535,51 @@ describe('AssetNFT', function () {
           expect(totalAmountReceived).to.equal(
             getValues(_caseNumber).totalAmountReceived,
           );
+        }
+      });
+
+      it('Calculate late days without set the payment receipt date', async function () {
+        const { nft, owner } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due less than 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            0,
+          );
+
+          expect(await nft.calculateLateDays(_assetNumber)).to.equal(0);
+        }
+      });
+
+      it('Calculate finance tenure without set the payment receipt date', async function () {
+        const { nft, owner } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due less than 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+
+          await nft.setAdditionalMetadata(
+            _assetNumber,
+            _metadata[2],
+            _metadata[3],
+            0,
+          );
+
+          const financeTenure = await nft.calculateFinanceTenure(_assetNumber);
+          const invoiceTenure = await nft.calculateInvoiceTenure(_assetNumber);
+
+          expect(financeTenure).to.equal(invoiceTenure);
         }
       });
     });
@@ -577,6 +680,7 @@ describe('AssetNFT', function () {
           getCase(_criticalCaseNumber).discountFee,
           getCase(_criticalCaseNumber).lateFee,
           getCase(_criticalCaseNumber).bankChargesFee,
+          getCase(_criticalCaseNumber).additionalFee,
           getCase(_criticalCaseNumber).gracePeriod,
           getCase(_criticalCaseNumber).advanceRatio,
           getCase(_criticalCaseNumber).dueDate,
@@ -609,25 +713,7 @@ describe('AssetNFT', function () {
         }
       });
 
-      it('Set the formulas contract by other address than the owner', async function () {
-        const { nft, otherAddress, formulas } = await loadFixture(deploy);
-
-        if (_caseNumber === _criticalCaseNumber) {
-          await expect(
-            nft.createAsset(
-              otherAddress.address,
-              _assetNumber,
-              _initialMetadata,
-            ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
-        } else {
-          await expect(
-            nft.connect(otherAddress).setFormulasContract(formulas.address),
-          ).to.be.rejectedWith('Ownable: caller is not the owner');
-        }
-      });
-
-      it('Set the payment receipt date by other address than the owner', async function () {
+      it('Set the additional metadata by other address than the owner', async function () {
         const { nft, otherAddress } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -642,12 +728,17 @@ describe('AssetNFT', function () {
           await expect(
             nft
               .connect(otherAddress)
-              .setPaymentReceiptDate(_assetNumber, _metadata[1]),
+              .setAdditionalMetadata(
+                _assetNumber,
+                _metadata[2],
+                _metadata[3],
+                _metadata[1],
+              ),
           ).to.be.rejectedWith('Ownable: caller is not the owner');
         }
       });
 
-      it('Set the amount received from buyer by other address than the owner', async function () {
+      it('Settle an asset by other address than the owner', async function () {
         const { nft, otherAddress } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -662,33 +753,18 @@ describe('AssetNFT', function () {
           await expect(
             nft
               .connect(otherAddress)
-              .setBuyerAmountReceived(_assetNumber, _metadata[2]),
+              .setAssetSettledMetadata(
+                _assetNumber,
+                _metadata[5],
+                _metadata[6],
+                _metadata[4],
+              ),
           ).to.be.rejectedWith('Ownable: caller is not the owner');
         }
       });
 
-      it('Set the amount received from supplier by other address than the owner', async function () {
-        const { nft, otherAddress } = await loadFixture(deploy);
-
-        if (_caseNumber === _criticalCaseNumber) {
-          await expect(
-            nft.createAsset(
-              otherAddress.address,
-              _assetNumber,
-              _initialMetadata,
-            ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
-        } else {
-          await expect(
-            nft
-              .connect(otherAddress)
-              .setSupplierAmountReceived(_assetNumber, _metadata[3]),
-          ).to.be.rejectedWith('Ownable: caller is not the owner');
-        }
-      });
-
-      it('Calculate late days without set the payment receipt date', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+      it('Set the additional metadata for a settled Asset', async function () {
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -697,18 +773,26 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
-
-          await expect(nft.calculateLateDays(_assetNumber)).to.be.rejectedWith(
-            'Payment receipt date = 0',
+          await nft.setAssetSettledMetadata(
+            _assetNumber,
+            _metadata[5],
+            _metadata[6],
+            _metadata[4],
           );
+
+          await expect(
+            nft.setAdditionalMetadata(
+              _assetNumber,
+              _metadata[2],
+              _metadata[3],
+              _metadata[1],
+            ),
+          ).to.be.rejectedWith('Asset is already settled');
         }
       });
 
-      it('Calculate discount amount without set the payment receipt date', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+      it('Settle an asset is already settled', async function () {
+        const { nft, owner } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -717,18 +801,26 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAssetSettledMetadata(
+            _assetNumber,
+            _metadata[5],
+            _metadata[6],
+            _metadata[4],
+          );
 
           await expect(
-            nft.calculateDiscountAmount(_assetNumber),
-          ).to.be.rejectedWith('Payment receipt date = 0');
+            nft.setAssetSettledMetadata(
+              _assetNumber,
+              _metadata[5],
+              _metadata[6],
+              _metadata[4],
+            ),
+          ).to.be.rejectedWith('Asset is already settled');
         }
       });
 
-      it('Calculate late amount without set the payment receipt date', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
+      it('Buy a settled asset', async function () {
+        const { nft, owner, otherAddress } = await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -737,33 +829,22 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setFormulasContract(formulas.address);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
+          await nft.setAssetSettledMetadata(
+            _assetNumber,
+            _metadata[5],
+            _metadata[6],
+            _metadata[4],
+          );
 
           await expect(
-            nft.calculateLateAmount(_assetNumber),
-          ).to.be.rejectedWith('Payment receipt date = 0');
-        }
-      });
-
-      it('Calculate finance tenure without set the payment receipt date', async function () {
-        const { nft, owner, formulas } = await loadFixture(deploy);
-
-        if (_caseNumber === _criticalCaseNumber) {
-          await expect(
-            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
-        } else {
-          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
-
-          await nft.setFormulasContract(formulas.address);
-          await nft.setBuyerAmountReceived(_assetNumber, _metadata[2]);
-          await nft.setSupplierAmountReceived(_assetNumber, _metadata[3]);
-
-          await expect(
-            nft.calculateFinanceTenure(_assetNumber),
-          ).to.be.rejectedWith('Payment receipt date = 0');
+            nft.buyAsset(
+              owner.address,
+              _assetNumber,
+              _metadata[2],
+              _metadata[3],
+              _metadata[1],
+            ),
+          ).to.be.rejectedWith('Asset is already settled');
         }
       });
     });
