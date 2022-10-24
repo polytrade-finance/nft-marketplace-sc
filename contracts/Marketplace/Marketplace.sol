@@ -13,14 +13,14 @@ import "../AssetNFT/IAssetNFT.sol";
  * @custom:receiver Receiver contract able to receiver tokens
  */
 contract Marketplace is IERC721Receiver, Ownable {
-    IAssetNFT private _assetNFT;
+    IAssetNFT public assetNFT;
 
     /**
      * @dev Constructor for the main Marketplace
      * @param _assetNFTAddress The address of the Asset NFT used in the marketplace
      */
     constructor(address _assetNFTAddress) {
-        _assetNFT = IAssetNFT(_assetNFTAddress);
+        assetNFT = IAssetNFT(_assetNFTAddress);
     }
 
     /**
@@ -59,7 +59,7 @@ contract Marketplace is IERC721Receiver, Ownable {
         uint _supplierAmountReceived,
         uint48 _paymentReceiptDate
     ) public {
-        _assetNFT.buyAsset(
+        assetNFT.buyAsset(
             msg.sender,
             _assetNumber,
             _buyerAmountReceived,
@@ -74,7 +74,7 @@ contract Marketplace is IERC721Receiver, Ownable {
      * @return int the required amount to be paied
      */
     function disburse(uint _assetNumber) public view returns (int) {
-        int _amount = _assetNFT.calculateNetAmountPayableToClient(_assetNumber);
+        int _amount = assetNFT.calculateNetAmountPayableToClient(_assetNumber);
 
         return _amount;
     }
