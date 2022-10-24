@@ -8,7 +8,12 @@ const MUMBAI_API_KEY = process.env.MUMBAI_API_KEY || '';
 const NETWORK = process.env.NETWORK || 'mumbai';
 const NFT_NAME = process.env.NFT_NAME || 'Polytrade';
 const NFT_SYMBOL = process.env.NFT_SYMBOL || 'TRADE';
-const NFT_BASE_URI = process.env.NFT_BASE_URI || 'https://ipfs.tech/';
+const NFT_FORMULAS_CONTRACT_ADDRESS =
+  process.env.NFT_FORMULAS_CONTRACT_ADDRESS ||
+  '0x221392d7E8C428598F6A539dEEb0E48Ab248f456';
+const NFT_CONTRACT_ADDRESS =
+  process.env.NFT_CONTRACT_ADDRESS ||
+  '0xa1c16983D0F6Af044412E03EC93406f86d6f7cEC';
 
 const CONSTANTS = {
   MUMBAI_RPC_URL,
@@ -17,7 +22,8 @@ const CONSTANTS = {
   NETWORK,
   NFT_NAME,
   NFT_SYMBOL,
-  NFT_BASE_URI,
+  NFT_FORMULAS_CONTRACT_ADDRESS,
+  NFT_CONTRACT_ADDRESS,
 };
 
 exports.default = CONSTANTS;

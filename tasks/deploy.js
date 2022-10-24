@@ -18,8 +18,15 @@ task('deploy', 'Deploy a new contract')
       if (contractName === CONTRACTS.NAMES[0]) {
         const NAME = CONSTANTS.NFT_NAME;
         const SYMBOL = CONSTANTS.NFT_SYMBOL;
-        const BASE_URI = CONSTANTS.NFT_BASE_URI;
-        contract = await Contract.deploy(NAME, SYMBOL, BASE_URI);
+        const NFT_FORMULAS_CONTRACT_ADDRESS =
+          CONSTANTS.NFT_FORMULAS_CONTRACT_ADDRESS;
+        contract = await Contract.deploy(
+          NAME,
+          SYMBOL,
+          NFT_FORMULAS_CONTRACT_ADDRESS,
+        );
+      } else if (contractName === CONTRACTS.NAMES[1]) {
+        contract = await Contract.deploy(CONSTANTS.NFT_CONTRACT_ADDRESS);
       } else {
         contract = await Contract.deploy();
       }
