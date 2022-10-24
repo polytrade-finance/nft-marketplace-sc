@@ -55,6 +55,19 @@ const _bankChargesFee = [
   '0',
   '10', // Error test case value
 ];
+const _additionalFee = [
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0',
+  '0', // Error test case value
+];
 const _gracePeriod = [
   '3',
   '5',
@@ -265,19 +278,6 @@ const _factoringAmount = [
   '227.0',
   '227.0', // Error test case value
 ];
-const _additionalFee = [
-  '0',
-  '0',
-  '0',
-  '0',
-  '0',
-  '0',
-  '0',
-  '0',
-  '0',
-  '0',
-  '0', // Error test case value
-];
 const _totalFee = [
   '98.42',
   '140.23',
@@ -330,6 +330,45 @@ const _supplierAmountReceived = [
   '7200.0',
   '7200.0', // Error test case value
 ];
+const _reservePaymentTransactionId = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11', // Error test case value
+];
+const _supplierAmountReserved = [
+  '0.0',
+  '0.0',
+  '2000.0',
+  '2000.0',
+  '5000.0',
+  '0.0',
+  '0.0',
+  '500.0',
+  '5921.0',
+  '7200.0',
+  '7200.0', // Error test case value
+];
+const _paymentReserveDate = [
+  '2022-11-18',
+  '2022-12-25',
+  '2023-01-23',
+  '2023-02-05',
+  '2023-01-24',
+  '2023-02-10',
+  '2023-02-15',
+  '2023-03-15',
+  '2023-03-15',
+  '2023-02-15',
+  '2023-02-15', // Error test case value
+];
 const _totalAmountReceived = [
   '10000.0',
   '9000.0',
@@ -365,6 +404,8 @@ exports.getCase = function getCase(caseNumber) {
     dueDate: new Date(_dueDate[caseNumber]).getTime() / 1000,
     paymentReceiptDate:
       new Date(_paymentReceiptDate[caseNumber]).getTime() / 1000,
+    paymentReserveDate:
+      new Date(_paymentReserveDate[caseNumber]).getTime() / 1000,
     gracePeriod: _gracePeriod[caseNumber],
     invoiceAmount: hre.ethers.utils.parseUnits(
       _invoiceAmount[caseNumber],
@@ -431,6 +472,11 @@ exports.getCase = function getCase(caseNumber) {
       _supplierAmountReceived[caseNumber],
       _decimals,
     ),
+    supplierAmountReserved: hre.ethers.utils.parseUnits(
+      _supplierAmountReserved[caseNumber],
+      _decimals,
+    ),
+    reservePaymentTransactionId: _reservePaymentTransactionId[caseNumber],
     totalAmountReceived: hre.ethers.utils.parseUnits(
       _totalAmountReceived[caseNumber],
       _decimals,
@@ -450,48 +496,31 @@ exports.getValues = function getValues(caseNumber) {
     fundsAdvancedDate: _fundsAdvancedDate[caseNumber],
     dueDate: _dueDate[caseNumber],
     paymentReceiptDate: _paymentReceiptDate[caseNumber],
+    paymentReserveDate: _paymentReserveDate[caseNumber],
     gracePeriod: _gracePeriod[caseNumber],
-
     invoiceAmount: _invoiceAmount[caseNumber],
-
     invoiceLimit: _invoiceLimit[caseNumber],
-
     invoiceTenure: _invoiceTenure[caseNumber],
-
     advanceRatio: _advanceRatio[caseNumber],
-
     advancedAmount: _advancedAmount[caseNumber],
-
     reserveAmount: _reserveAmount[caseNumber],
-
     numberOfLateDays: _numberOfLateDays[caseNumber],
-
     financeTenure: _financeTenure[caseNumber],
-
     lateFee: _lateFee[caseNumber],
     lateAmount: _lateAmount[caseNumber],
-
     discountFee: _discountFee[caseNumber],
-
     factoringFee: _factoringFee[caseNumber],
-
     discountAmount: _discountAmount[caseNumber],
-
     factoringAmount: _factoringAmount[caseNumber],
-
     additionalFee: _additionalFee[caseNumber],
-
     bankChargesFee: _bankChargesFee[caseNumber],
-
     totalFee: _totalFee[caseNumber],
     netAmountPayableToClient: _netAmountPayableToClient[caseNumber],
-
     buyerAmountReceived: _buyerAmountReceived[caseNumber],
-
     supplierAmountReceived: _supplierAmountReceived[caseNumber],
-
+    supplierAmountReserved: _supplierAmountReserved[caseNumber],
+    reservePaymentTransactionId: _reservePaymentTransactionId[caseNumber],
     totalAmountReceived: _totalAmountReceived[caseNumber],
-
     shortExcessPaymentReceived: _shortExcessPaymentReceived[caseNumber],
   };
 
