@@ -15,7 +15,7 @@ import "../Formulas/IFormulas.sol";
  * @custom:indexing Enumerable token can be indexed
  */
 contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
-    IFormulas private _formulas;
+    IFormulas public formulas;
     string public baseURI;
     /**
      * @dev Mapping will be indexing the metadata for each AssetNFT by its Asset Number
@@ -61,7 +61,8 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @param _formulasAddress The address of the formulas calculation contract
      */
     function setFormulasContract(address _formulasAddress) external onlyOwner {
-        _formulas = IFormulas(_formulasAddress);
+        emit FormulasSet(msg.sender, _formulasAddress);
+        formulas = IFormulas(_formulasAddress);
     }
 
     /**
@@ -73,6 +74,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         uint _assetNumber,
         uint48 _paymentReceiptDate
     ) external onlyOwner {
+        emit PaymentReceiptDateSet(
+            msg.sender,
+            _assetNumber,
+            _paymentReceiptDate
+        );
         _metadata[_assetNumber].paymentReceiptDate = _paymentReceiptDate;
     }
 
@@ -85,6 +91,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         uint _assetNumber,
         uint _buyerAmountReceived
     ) external onlyOwner {
+        emit BuyerAmountReceivedSet(
+            msg.sender,
+            _assetNumber,
+            _buyerAmountReceived
+        );
         _metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
     }
 
@@ -97,6 +108,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         uint _assetNumber,
         uint _supplierAmountReceived
     ) external onlyOwner {
+        emit SupplierAmountReceivedSet(
+            msg.sender,
+            _assetNumber,
+            _supplierAmountReceived
+        );
         _metadata[_assetNumber]
             .supplierAmountReceived = _supplierAmountReceived;
     }
@@ -130,7 +146,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             "Payment receipt date = 0"
         );
         return
-            _formulas.lateDays(
+            formulas.lateDays(
                 assetMetadata.paymentReceiptDate,
                 assetMetadata.initialMetadata.dueDate,
                 assetMetadata.initialMetadata.gracePeriod
@@ -152,21 +168,21 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             assetMetadata.paymentReceiptDate != 0,
             "Payment receipt date = 0"
         );
-        uint16 financeTenure = _formulas.financeTenure(
+        uint16 financeTenure = formulas.financeTenure(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.fundsAdvancedDate
         );
-        uint16 lateDays = _formulas.lateDays(
+        uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
             assetMetadata.initialMetadata.gracePeriod
         );
-        uint advancedAmount = _formulas.advancedAmount(
+        uint advancedAmount = formulas.advancedAmount(
             assetMetadata.initialMetadata.invoiceLimit,
             assetMetadata.initialMetadata.advanceRatio
         );
         return
-            _formulas.discountAmount(
+            formulas.discountAmount(
                 assetMetadata.initialMetadata.discountFee,
                 financeTenure,
                 lateDays,
@@ -189,17 +205,17 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             assetMetadata.paymentReceiptDate != 0,
             "Payment receipt date = 0"
         );
-        uint16 lateDays = _formulas.lateDays(
+        uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
             assetMetadata.initialMetadata.gracePeriod
         );
-        uint advancedAmount = _formulas.advancedAmount(
+        uint advancedAmount = formulas.advancedAmount(
             assetMetadata.initialMetadata.invoiceLimit,
             assetMetadata.initialMetadata.advanceRatio
         );
         return
-            _formulas.lateAmount(
+            formulas.lateAmount(
                 assetMetadata.initialMetadata.lateFee,
                 lateDays,
                 advancedAmount
@@ -218,7 +234,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
         return
-            _formulas.advancedAmount(
+            formulas.advancedAmount(
                 assetMetadata.initialMetadata.invoiceLimit,
                 assetMetadata.initialMetadata.advanceRatio
             );
@@ -236,7 +252,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
         return
-            _formulas.factoringAmount(
+            formulas.factoringAmount(
                 assetMetadata.initialMetadata.invoiceAmount,
                 assetMetadata.initialMetadata.factoringFee
             );
@@ -254,7 +270,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
         return
-            _formulas.invoiceTenure(
+            formulas.invoiceTenure(
                 assetMetadata.initialMetadata.dueDate,
                 assetMetadata.initialMetadata.invoiceDate
             );
@@ -271,12 +287,12 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        uint advancedAmount = _formulas.advancedAmount(
+        uint advancedAmount = formulas.advancedAmount(
             assetMetadata.initialMetadata.invoiceLimit,
             assetMetadata.initialMetadata.advanceRatio
         );
         return
-            _formulas.reserveAmount(
+            formulas.reserveAmount(
                 assetMetadata.initialMetadata.invoiceAmount,
                 advancedAmount
             );
@@ -298,7 +314,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             "Payment receipt date = 0"
         );
         return
-            _formulas.financeTenure(
+            formulas.financeTenure(
                 assetMetadata.paymentReceiptDate,
                 assetMetadata.initialMetadata.fundsAdvancedDate
             );
@@ -319,31 +335,31 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             assetMetadata.paymentReceiptDate != 0,
             "Payment receipt date = 0"
         );
-        uint16 financeTenure = _formulas.financeTenure(
+        uint16 financeTenure = formulas.financeTenure(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.fundsAdvancedDate
         );
-        uint16 lateDays = _formulas.lateDays(
+        uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
             assetMetadata.initialMetadata.gracePeriod
         );
-        uint advancedAmount = _formulas.advancedAmount(
+        uint advancedAmount = formulas.advancedAmount(
             assetMetadata.initialMetadata.invoiceLimit,
             assetMetadata.initialMetadata.advanceRatio
         );
-        uint factoringAmount = _formulas.factoringAmount(
+        uint factoringAmount = formulas.factoringAmount(
             assetMetadata.initialMetadata.invoiceAmount,
             assetMetadata.initialMetadata.factoringFee
         );
-        uint discountAmount = _formulas.discountAmount(
+        uint discountAmount = formulas.discountAmount(
             assetMetadata.initialMetadata.discountFee,
             financeTenure,
             lateDays,
             advancedAmount
         );
         return
-            _formulas.totalFees(
+            formulas.totalFees(
                 factoringAmount,
                 discountAmount,
                 0,
@@ -366,41 +382,41 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             assetMetadata.paymentReceiptDate != 0,
             "Payment receipt date = 0"
         );
-        uint advancedAmount = _formulas.advancedAmount(
+        uint advancedAmount = formulas.advancedAmount(
             assetMetadata.initialMetadata.invoiceLimit,
             assetMetadata.initialMetadata.advanceRatio
         );
-        uint16 financeTenure = _formulas.financeTenure(
+        uint16 financeTenure = formulas.financeTenure(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.fundsAdvancedDate
         );
-        uint16 lateDays = _formulas.lateDays(
+        uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
             assetMetadata.initialMetadata.gracePeriod
         );
-        uint factoringAmount = _formulas.factoringAmount(
+        uint factoringAmount = formulas.factoringAmount(
             assetMetadata.initialMetadata.invoiceAmount,
             assetMetadata.initialMetadata.factoringFee
         );
-        uint discountAmount = _formulas.discountAmount(
+        uint discountAmount = formulas.discountAmount(
             assetMetadata.initialMetadata.discountFee,
             financeTenure,
             lateDays,
             advancedAmount
         );
-        uint totalAmountReceived = _formulas.totalAmountReceived(
+        uint totalAmountReceived = formulas.totalAmountReceived(
             assetMetadata.buyerAmountReceived,
             assetMetadata.supplierAmountReceived
         );
-        uint totalFees = _formulas.totalFees(
+        uint totalFees = formulas.totalFees(
             factoringAmount,
             discountAmount,
             0,
             assetMetadata.initialMetadata.bankChargesFee
         );
         return
-            _formulas.netAmountPayableToClient(
+            formulas.netAmountPayableToClient(
                 totalAmountReceived,
                 advancedAmount,
                 totalFees
@@ -419,7 +435,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
         return
-            _formulas.totalAmountReceived(
+            formulas.totalAmountReceived(
                 assetMetadata.buyerAmountReceived,
                 assetMetadata.supplierAmountReceived
             );
@@ -430,6 +446,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @param _uri string representation of the assetNFT base URI on IPFS
      */
     function _setBaseURI(string memory _uri) internal {
+        emit BaseURISet(msg.sender, _uri);
         baseURI = _uri;
     }
 
