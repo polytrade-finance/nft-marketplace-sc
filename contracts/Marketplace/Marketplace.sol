@@ -17,6 +17,14 @@ contract Marketplace is IERC721Receiver, Ownable {
     IAssetNFT private _assetNFT;
 
     /**
+     * @dev Constructor for the main Marketplace
+     * @param _assetNFTAddress The address of the Asset NFT used in the marketplace
+     */
+    constructor(address _assetNFTAddress) {
+        _assetNFT = IAssetNFT(_assetNFTAddress);
+    }
+
+    /**
      * @dev Whenever an {IERC721} `assetNumber` token is transferred to this contract via {IERC721-safeTransferFrom}
      * by `operator` from `from`, this function is called.
      *
@@ -40,21 +48,25 @@ contract Marketplace is IERC721Receiver, Ownable {
     }
 
     /**
-     * @dev Implementation of a setter for the Asset NFT
-     * @param _address The address of the Asset NFT used in the marketplace
-     */
-    function setAssetNFT(address _address) public onlyOwner {
-        _assetNFT = IAssetNFT(_address);
-    }
-
-    /**
      * @dev Implementation of the function used to buy Asset NFT
      * @param _assetNumber The uint unique number of the Asset NFT
+     * @param _buyerAmountReceived The uint value of the amount received from buyer
+     * @param _supplierAmountReceived The uint value of the amount received from supplier
+     * @param _paymentReceiptDate The uint48 value of the payment receipt date
      */
-    function buy(uint _assetNumber) public {
-        address _owner = _assetNFT.ownerOf(_assetNumber);
-
-        _assetNFT.safeTransferFrom(_owner, msg.sender, _assetNumber);
+    function buy(
+        uint _assetNumber,
+        uint _buyerAmountReceived,
+        uint _supplierAmountReceived,
+        uint48 _paymentReceiptDate
+    ) public {
+        _assetNFT.buyAsset(
+            msg.sender,
+            _assetNumber,
+            _buyerAmountReceived,
+            _supplierAmountReceived,
+            _paymentReceiptDate
+        );
     }
 
     /**
