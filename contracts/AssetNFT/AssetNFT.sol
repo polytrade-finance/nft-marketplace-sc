@@ -32,8 +32,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         string memory _symbol,
         address _formulasAddress
     ) ERC721(_name, _symbol) {
-        emit FormulasSet(msg.sender, _formulasAddress);
-        formulas = IFormulas(_formulasAddress);
+        _setFormulas(_formulasAddress);
     }
 
     /**
@@ -55,6 +54,14 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         _metadata[_assetNumber].initialMetadata = _initialMetadata;
         _mint(_receiver, _assetNumber);
         emit AssetCreate(msg.sender, _receiver, _assetNumber);
+    }
+
+    /**
+     * @dev Implementation of a setter for the formulas contract
+     * @param _formulasAddress The address of the formulas calculation contract
+     */
+    function setFormulas(address _formulasAddress) external onlyOwner {
+        _setFormulas(_formulasAddress);
     }
 
     /**
@@ -477,6 +484,15 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         _metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
         _metadata[_assetNumber]
             .supplierAmountReceived = _supplierAmountReceived;
+    }
+
+    /**
+     * @dev Implementation of a setter for the formulas contract
+     * @param _formulasAddress The address of the formulas calculation contract
+     */
+    function _setFormulas(address _formulasAddress) private {
+        emit FormulasSet(msg.sender, _formulasAddress);
+        formulas = IFormulas(_formulasAddress);
     }
 
     /**

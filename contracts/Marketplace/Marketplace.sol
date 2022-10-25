@@ -16,11 +16,25 @@ contract Marketplace is IERC721Receiver, Ownable {
     IAssetNFT public assetNFT;
 
     /**
+     * @dev Emitted when new `_assetNFT` contract has been set
+     * @param _assetNFT The address of asset NFT contract token
+     */
+    event AssetNFTSet(address _assetNFT);
+
+    /**
      * @dev Constructor for the main Marketplace
      * @param _assetNFTAddress The address of the Asset NFT used in the marketplace
      */
     constructor(address _assetNFTAddress) {
-        assetNFT = IAssetNFT(_assetNFTAddress);
+        _setAssetNFT(_assetNFTAddress);
+    }
+
+    /**
+     * @dev Implementation of a setter for the asset NFT contract
+     * @param _assetNFTAddress The address of the asset NFT contract
+     */
+    function setAssetNFT(address _assetNFTAddress) external onlyOwner {
+        _setAssetNFT(_assetNFTAddress);
     }
 
     /**
@@ -77,5 +91,14 @@ contract Marketplace is IERC721Receiver, Ownable {
         int _amount = assetNFT.calculateNetAmountPayableToClient(_assetNumber);
 
         return _amount;
+    }
+
+    /**
+     * @dev Implementation of a setter for the asset NFT contract
+     * @param _assetNFTAddress The address of the asset NFT contract
+     */
+    function _setAssetNFT(address _assetNFTAddress) private {
+        emit AssetNFTSet(_assetNFTAddress);
+        assetNFT = IAssetNFT(_assetNFTAddress);
     }
 }
