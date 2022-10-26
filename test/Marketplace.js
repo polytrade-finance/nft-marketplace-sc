@@ -7,8 +7,9 @@ const { getCase } = require('../configs/data.js');
 
 describe('Marketplace', function () {
   const _criticalCaseNumber = 10;
-
   const _assetNumber = 0;
+
+  const _totalSupply = 1000000;
 
   async function deploy() {
     const [owner, otherAddress] = await hre.ethers.getSigners();
@@ -23,15 +24,30 @@ describe('Marketplace', function () {
       formulas.address,
     );
 
+    const USDT = await hre.ethers.getContractFactory(CONTRACTS.NAMES[4]);
+    const usdt = await USDT.deploy(
+      CONSTANTS.TOKEN_NAME,
+      CONSTANTS.TOKEN_SYMBOL,
+      otherAddress.address,
+      _totalSupply,
+    );
+
     const Marketplace = await hre.ethers.getContractFactory(CONTRACTS.NAMES[1]);
-    const marketplace = await Marketplace.deploy(nft.address);
+    const marketplace = await Marketplace.deploy(nft.address, usdt.address);
 
     const NonReceiverMarketplace = await hre.ethers.getContractFactory(
       CONTRACTS.NAMES[2],
     );
     const nonReceiverMarketplace = await NonReceiverMarketplace.deploy();
 
-    return { nft, marketplace, nonReceiverMarketplace, owner, otherAddress };
+    return {
+      nft,
+      usdt,
+      marketplace,
+      nonReceiverMarketplace,
+      owner,
+      otherAddress,
+    };
   }
 
   for (let index = 0; index <= 10; index++) {
@@ -149,9 +165,7 @@ describe('Marketplace', function () {
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
 
-          await marketplace
-            .connect(otherAddress)
-            .buy(_assetNumber, _metadata[2], _metadata[3], _metadata[1]);
+          await marketplace.connect(otherAddress).buy(_assetNumber);
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(
             otherAddress.address,
@@ -218,9 +232,7 @@ describe('Marketplace', function () {
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
 
           await expect(
-            marketplace
-              .connect(otherAddress)
-              .buy(_assetNumber, _metadata[2], _metadata[3], _metadata[1]),
+            marketplace.connect(otherAddress).buy(_assetNumber),
           ).to.be.rejectedWith(
             'ERC721: caller is not token owner nor approved',
           );

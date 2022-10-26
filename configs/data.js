@@ -397,7 +397,7 @@ const _shortExcessPaymentReceived = [
 ];
 
 exports.getCase = function getCase(caseNumber) {
-  const testCase = {
+  return {
     invoiceDate: new Date(_invoiceDate[caseNumber]).getTime() / 1000,
     fundsAdvancedDate:
       new Date(_fundsAdvancedDate[caseNumber]).getTime() / 1000,
@@ -486,12 +486,10 @@ exports.getCase = function getCase(caseNumber) {
       _decimals,
     ),
   };
-
-  return testCase;
 };
 
 exports.getValues = function getValues(caseNumber) {
-  const testValues = {
+  return {
     invoiceDate: _invoiceDate[caseNumber],
     fundsAdvancedDate: _fundsAdvancedDate[caseNumber],
     dueDate: _dueDate[caseNumber],
@@ -523,6 +521,4 @@ exports.getValues = function getValues(caseNumber) {
     totalAmountReceived: _totalAmountReceived[caseNumber],
     shortExcessPaymentReceived: _shortExcessPaymentReceived[caseNumber],
   };
-
-  return testValues;
 };

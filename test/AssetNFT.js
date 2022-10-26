@@ -214,32 +214,6 @@ describe('AssetNFT', function () {
           expect(metadata.supplierAmountReceived).to.equal(_metadata[3]);
         }
       });
-
-      it('Buy an asset - check the ownership', async function () {
-        const { nft, owner, otherAddress } = await loadFixture(deploy);
-
-        if (_caseNumber === _criticalCaseNumber) {
-          await expect(
-            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
-        } else {
-          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
-
-          expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
-
-          await nft.buyAsset(
-            otherAddress.address,
-            _assetNumber,
-            _metadata[2],
-            _metadata[3],
-            _metadata[1],
-          );
-
-          expect(await nft.ownerOf(_assetNumber)).to.equal(
-            otherAddress.address,
-          );
-        }
-      });
     });
 
     describe(`Formulas calculation from the AssetNFT for test case N#${
@@ -814,35 +788,6 @@ describe('AssetNFT', function () {
               _metadata[5],
               _metadata[6],
               _metadata[4],
-            ),
-          ).to.be.rejectedWith('Asset is already settled');
-        }
-      });
-
-      it('Buy a settled asset', async function () {
-        const { nft, owner, otherAddress } = await loadFixture(deploy);
-
-        if (_caseNumber === _criticalCaseNumber) {
-          await expect(
-            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
-        } else {
-          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
-
-          await nft.setAssetSettledMetadata(
-            _assetNumber,
-            _metadata[5],
-            _metadata[6],
-            _metadata[4],
-          );
-
-          await expect(
-            nft.buyAsset(
-              owner.address,
-              _assetNumber,
-              _metadata[2],
-              _metadata[3],
-              _metadata[1],
             ),
           ).to.be.rejectedWith('Asset is already settled');
         }

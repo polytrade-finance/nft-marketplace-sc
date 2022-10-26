@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "../Token/Token.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../AssetNFT/IAssetNFT.sol";
@@ -14,6 +15,7 @@ import "../AssetNFT/IAssetNFT.sol";
  */
 contract Marketplace is IERC721Receiver, Ownable {
     IAssetNFT public assetNFT;
+    Token public usdt;
 
     /**
      * @dev Emitted when new `_assetNFT` contract has been set
@@ -22,11 +24,19 @@ contract Marketplace is IERC721Receiver, Ownable {
     event AssetNFTSet(address _assetNFT);
 
     /**
+     * @dev Emitted when new `_usdt` contract has been set
+     * @param _usdt The address of ERC20 contract token
+     */
+    event USDTSet(address _usdt);
+
+    /**
      * @dev Constructor for the main Marketplace
      * @param _assetNFTAddress The address of the Asset NFT used in the marketplace
+     * @param _usdtAddress The address of the usdt (ERC20) contract
      */
-    constructor(address _assetNFTAddress) {
+    constructor(address _assetNFTAddress, address _usdtAddress) {
         _setAssetNFT(_assetNFTAddress);
+        _setUSDT(_usdtAddress);
     }
 
     /**
@@ -35,6 +45,14 @@ contract Marketplace is IERC721Receiver, Ownable {
      */
     function setAssetNFT(address _assetNFTAddress) external onlyOwner {
         _setAssetNFT(_assetNFTAddress);
+    }
+
+    /**
+     * @dev Implementation of a setter for the ERC20 token
+     * @param _usdtAddress The address of the usdt (ERC20) contract
+     */
+    function setUSDT(address _usdtAddress) external onlyOwner {
+        _setUSDT(_usdtAddress);
     }
 
     /**
@@ -63,23 +81,14 @@ contract Marketplace is IERC721Receiver, Ownable {
     /**
      * @dev Implementation of the function used to buy Asset NFT
      * @param _assetNumber The uint unique number of the Asset NFT
-     * @param _buyerAmountReceived The uint value of the amount received from buyer
-     * @param _supplierAmountReceived The uint value of the amount received from supplier
-     * @param _paymentReceiptDate The uint48 value of the payment receipt date
      */
-    function buy(
-        uint _assetNumber,
-        uint _buyerAmountReceived,
-        uint _supplierAmountReceived,
-        uint48 _paymentReceiptDate
-    ) public {
-        assetNFT.buyAsset(
-            msg.sender,
-            _assetNumber,
-            _buyerAmountReceived,
-            _supplierAmountReceived,
-            _paymentReceiptDate
-        );
+    function buy(uint _assetNumber) public {
+        address _owner = assetNFT.ownerOf(_assetNumber);
+        require(_owner != address(0), "Asset does not exist");
+        uint _amount = assetNFT.calculateReserveAmount(_assetNumber);
+        assetNFT.safeTransferFrom(_owner, msg.sender, _assetNumber);
+        usdt.approve(msg.sender, address(this), _amount);
+        usdt.transferFrom(msg.sender, _owner, _amount);
     }
 
     /**
@@ -98,7 +107,16 @@ contract Marketplace is IERC721Receiver, Ownable {
      * @param _assetNFTAddress The address of the asset NFT contract
      */
     function _setAssetNFT(address _assetNFTAddress) private {
-        emit AssetNFTSet(_assetNFTAddress);
         assetNFT = IAssetNFT(_assetNFTAddress);
+        emit AssetNFTSet(_assetNFTAddress);
+    }
+
+    /**
+     * @dev Implementation of a setter for the ERC20 token
+     * @param _usdtAddress The address of the usdt (ERC20) contract
+     */
+    function _setUSDT(address _usdtAddress) private {
+        usdt = Token(_usdtAddress);
+        emit USDTSet(_usdtAddress);
     }
 }

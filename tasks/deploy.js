@@ -27,6 +27,15 @@ task('deploy', 'Deploy a new contract')
         );
       } else if (contractName === CONTRACTS.NAMES[1]) {
         contract = await Contract.deploy(CONSTANTS.NFT_CONTRACT_ADDRESS);
+      } else if (contractName === CONTRACTS.NAMES[4]) {
+        const _totalSupply = '1000000';
+        const _receiver = '0x936e928babc957f670ba75daf78255bffe3172ab';
+        contract = await Contract.deploy(
+          CONSTANTS.TOKEN_NAME,
+          CONSTANTS.TOKEN_SYMBOL,
+          _receiver,
+          _totalSupply,
+        );
       } else {
         contract = await Contract.deploy();
       }

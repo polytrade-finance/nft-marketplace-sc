@@ -109,31 +109,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     }
 
     /**
-     * @dev Buy an AssetNFT
-     * @param _buyer Address of buyer
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _buyerAmountReceived The uint value of the amount received from buyer
-     * @param _supplierAmountReceived The uint value of the amount received from supplier
-     * @param _paymentReceiptDate The uint48 value of the payment receipt date
-     */
-    function buyAsset(
-        address _buyer,
-        uint _assetNumber,
-        uint _buyerAmountReceived,
-        uint _supplierAmountReceived,
-        uint48 _paymentReceiptDate
-    ) external {
-        address _owner = ownerOf(_assetNumber);
-        _setAdditionalMetadata(
-            _assetNumber,
-            _buyerAmountReceived,
-            _supplierAmountReceived,
-            _paymentReceiptDate
-        );
-        safeTransferFrom(_owner, _buyer, _assetNumber);
-    }
-
-    /**
      * @dev Implementation of a getter for asset metadata
      * @return Metadata The metadata related to a specific asset
      * @param _assetNumber The unique uint Asset Number of the NFT
@@ -473,6 +448,10 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
                 _metadata[_assetNumber].paymentReserveDate == 0,
             "Asset is already settled"
         );
+        _metadata[_assetNumber].paymentReceiptDate = _paymentReceiptDate;
+        _metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
+        _metadata[_assetNumber]
+            .supplierAmountReceived = _supplierAmountReceived;
         emit AdditionalMetadataSet(
             msg.sender,
             _assetNumber,
@@ -480,10 +459,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             _supplierAmountReceived,
             _paymentReceiptDate
         );
-        _metadata[_assetNumber].paymentReceiptDate = _paymentReceiptDate;
-        _metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
-        _metadata[_assetNumber]
-            .supplierAmountReceived = _supplierAmountReceived;
     }
 
     /**
@@ -491,8 +466,8 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @param _formulasAddress The address of the formulas calculation contract
      */
     function _setFormulas(address _formulasAddress) private {
-        emit FormulasSet(msg.sender, _formulasAddress);
         formulas = IFormulas(_formulasAddress);
+        emit FormulasSet(msg.sender, _formulasAddress);
     }
 
     /**
@@ -515,6 +490,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
                 _metadata[_assetNumber].paymentReserveDate == 0,
             "Asset is already settled"
         );
+        _metadata[_assetNumber].paymentReserveDate = _paymentReserveDate;
+        _metadata[_assetNumber]
+            .supplierAmountReserved = _supplierAmountReserved;
+        _metadata[_assetNumber]
+            .reservePaymentTransactionId = _reservePaymentTransactionId;
         emit AssetSettledMetadataSet(
             msg.sender,
             _assetNumber,
@@ -522,11 +502,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             _reservePaymentTransactionId,
             _paymentReserveDate
         );
-        _metadata[_assetNumber].paymentReserveDate = _paymentReserveDate;
-        _metadata[_assetNumber]
-            .supplierAmountReserved = _supplierAmountReserved;
-        _metadata[_assetNumber]
-            .reservePaymentTransactionId = _reservePaymentTransactionId;
     }
 
     /**

@@ -157,22 +157,6 @@ interface IAssetNFT is IERC721 {
     ) external;
 
     /**
-     * @dev Buy an AssetNFT
-     * @param _buyer Address of buyer
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _buyerAmountReceived The uint value of the amount received from buyer
-     * @param _supplierAmountReceived The uint value of the amount received from supplier
-     * @param _paymentReceiptDate The uint48 value of the payment receipt date
-     */
-    function buyAsset(
-        address _buyer,
-        uint _assetNumber,
-        uint _buyerAmountReceived,
-        uint _supplierAmountReceived,
-        uint48 _paymentReceiptDate
-    ) external;
-
-    /**
      * @dev Implementation of a getter for asset metadata
      * @return Metadata The metadata related to a specific asset
      * @param _assetNumber The unique uint Asset Number of the NFT
