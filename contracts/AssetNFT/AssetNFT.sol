@@ -16,7 +16,6 @@ import "../Formulas/IFormulas.sol";
  */
 contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     IFormulas public formulas;
-    string public baseURI;
     /**
      * @dev Mapping will be indexing the metadata for each AssetNFT by its Asset Number
      */
@@ -26,13 +25,14 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @dev Constructor will call the parent one to create an ERC721 with specific name and symbol
      * @param _name String defining the name of the new ERC721 token
      * @param _symbol String defining the symbol of the new ERC721 token
+     * @param _formulasAddress The address of the formulas calculation contract
      */
     constructor(
         string memory _name,
         string memory _symbol,
-        string memory _uri
+        address _formulasAddress
     ) ERC721(_name, _symbol) {
-        _setBaseURI(_uri);
+        _setFormulas(_formulasAddress);
     }
 
     /**
@@ -57,64 +57,55 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     }
 
     /**
-     * @dev Implementation of a setter for formulas calculation instance
+     * @dev Implementation of a setter for the formulas contract
      * @param _formulasAddress The address of the formulas calculation contract
      */
-    function setFormulasContract(address _formulasAddress) external onlyOwner {
-        emit FormulasSet(msg.sender, _formulasAddress);
-        formulas = IFormulas(_formulasAddress);
+    function setFormulas(address _formulasAddress) external onlyOwner {
+        _setFormulas(_formulasAddress);
     }
 
     /**
-     * @dev Implementation of a setter for payment receipt date
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _paymentReceiptDate The uint48 value of the payment receipt date
-     */
-    function setPaymentReceiptDate(
-        uint _assetNumber,
-        uint48 _paymentReceiptDate
-    ) external onlyOwner {
-        emit PaymentReceiptDateSet(
-            msg.sender,
-            _assetNumber,
-            _paymentReceiptDate
-        );
-        _metadata[_assetNumber].paymentReceiptDate = _paymentReceiptDate;
-    }
-
-    /**
-     * @dev Implementation of a setter for amount received from buyer
+     * @dev Implementation of a setter for
+     * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
      * @param _buyerAmountReceived The uint value of the amount received from buyer
+     * @param _supplierAmountReceived The uint value of the amount received from supplier
+     * @param _paymentReceiptDate The uint48 value of the payment receipt date
      */
-    function setBuyerAmountReceived(
+    function setAdditionalMetadata(
         uint _assetNumber,
-        uint _buyerAmountReceived
+        uint _buyerAmountReceived,
+        uint _supplierAmountReceived,
+        uint48 _paymentReceiptDate
     ) external onlyOwner {
-        emit BuyerAmountReceivedSet(
-            msg.sender,
+        _setAdditionalMetadata(
             _assetNumber,
-            _buyerAmountReceived
+            _buyerAmountReceived,
+            _supplierAmountReceived,
+            _paymentReceiptDate
         );
-        _metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
     }
 
     /**
-     * @dev Implementation of a setter for amount received from supplier
+     * @dev Implementation of a setter for
+     * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _supplierAmountReceived The uint value of the amount received from supplier
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
+     * @param _reservePaymentTransactionId The uint value of the payment transaction ID
+     * @param _paymentReserveDate The uint48 value of the reserve payment date
      */
-    function setSupplierAmountReceived(
+    function setAssetSettledMetadata(
         uint _assetNumber,
-        uint _supplierAmountReceived
+        uint _supplierAmountReserved,
+        uint _reservePaymentTransactionId,
+        uint48 _paymentReserveDate
     ) external onlyOwner {
-        emit SupplierAmountReceivedSet(
-            msg.sender,
+        _setAssetSettledMetadata(
             _assetNumber,
-            _supplierAmountReceived
+            _supplierAmountReserved,
+            _reservePaymentTransactionId,
+            _paymentReserveDate
         );
-        _metadata[_assetNumber]
-            .supplierAmountReceived = _supplierAmountReceived;
     }
 
     /**
@@ -141,10 +132,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint16)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        require(
-            assetMetadata.paymentReceiptDate != 0,
-            "Payment receipt date = 0"
-        );
         return
             formulas.lateDays(
                 assetMetadata.paymentReceiptDate,
@@ -164,14 +151,15 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        require(
-            assetMetadata.paymentReceiptDate != 0,
-            "Payment receipt date = 0"
-        );
-        uint16 financeTenure = formulas.financeTenure(
-            assetMetadata.paymentReceiptDate,
-            assetMetadata.initialMetadata.fundsAdvancedDate
-        );
+        uint16 tenure = assetMetadata.paymentReceiptDate == 0
+            ? formulas.invoiceTenure(
+                assetMetadata.initialMetadata.dueDate,
+                assetMetadata.initialMetadata.invoiceDate
+            )
+            : formulas.financeTenure(
+                assetMetadata.paymentReceiptDate,
+                assetMetadata.initialMetadata.fundsAdvancedDate
+            );
         uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
@@ -184,7 +172,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         return
             formulas.discountAmount(
                 assetMetadata.initialMetadata.discountFee,
-                financeTenure,
+                tenure,
                 lateDays,
                 advancedAmount
             );
@@ -201,10 +189,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        require(
-            assetMetadata.paymentReceiptDate != 0,
-            "Payment receipt date = 0"
-        );
         uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
@@ -309,15 +293,16 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint24)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        require(
-            assetMetadata.paymentReceiptDate != 0,
-            "Payment receipt date = 0"
-        );
         return
-            formulas.financeTenure(
-                assetMetadata.paymentReceiptDate,
-                assetMetadata.initialMetadata.fundsAdvancedDate
-            );
+            assetMetadata.paymentReceiptDate == 0
+                ? formulas.invoiceTenure(
+                    assetMetadata.initialMetadata.dueDate,
+                    assetMetadata.initialMetadata.invoiceDate
+                )
+                : formulas.financeTenure(
+                    assetMetadata.paymentReceiptDate,
+                    assetMetadata.initialMetadata.fundsAdvancedDate
+                );
     }
 
     /**
@@ -331,14 +316,15 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (uint)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        require(
-            assetMetadata.paymentReceiptDate != 0,
-            "Payment receipt date = 0"
-        );
-        uint16 financeTenure = formulas.financeTenure(
-            assetMetadata.paymentReceiptDate,
-            assetMetadata.initialMetadata.fundsAdvancedDate
-        );
+        uint16 tenure = assetMetadata.paymentReceiptDate == 0
+            ? formulas.invoiceTenure(
+                assetMetadata.initialMetadata.dueDate,
+                assetMetadata.initialMetadata.invoiceDate
+            )
+            : formulas.financeTenure(
+                assetMetadata.paymentReceiptDate,
+                assetMetadata.initialMetadata.fundsAdvancedDate
+            );
         uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
@@ -354,7 +340,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         );
         uint discountAmount = formulas.discountAmount(
             assetMetadata.initialMetadata.discountFee,
-            financeTenure,
+            tenure,
             lateDays,
             advancedAmount
         );
@@ -362,7 +348,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
             formulas.totalFees(
                 factoringAmount,
                 discountAmount,
-                0,
+                assetMetadata.initialMetadata.additionalFee,
                 assetMetadata.initialMetadata.bankChargesFee
             );
     }
@@ -378,18 +364,19 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (int)
     {
         Metadata memory assetMetadata = _getAsset(_assetNumber);
-        require(
-            assetMetadata.paymentReceiptDate != 0,
-            "Payment receipt date = 0"
-        );
         uint advancedAmount = formulas.advancedAmount(
             assetMetadata.initialMetadata.invoiceLimit,
             assetMetadata.initialMetadata.advanceRatio
         );
-        uint16 financeTenure = formulas.financeTenure(
-            assetMetadata.paymentReceiptDate,
-            assetMetadata.initialMetadata.fundsAdvancedDate
-        );
+        uint16 tenure = assetMetadata.paymentReceiptDate == 0
+            ? formulas.invoiceTenure(
+                assetMetadata.initialMetadata.dueDate,
+                assetMetadata.initialMetadata.invoiceDate
+            )
+            : formulas.financeTenure(
+                assetMetadata.paymentReceiptDate,
+                assetMetadata.initialMetadata.fundsAdvancedDate
+            );
         uint16 lateDays = formulas.lateDays(
             assetMetadata.paymentReceiptDate,
             assetMetadata.initialMetadata.dueDate,
@@ -401,7 +388,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         );
         uint discountAmount = formulas.discountAmount(
             assetMetadata.initialMetadata.discountFee,
-            financeTenure,
+            tenure,
             lateDays,
             advancedAmount
         );
@@ -412,7 +399,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         uint totalFees = formulas.totalFees(
             factoringAmount,
             discountAmount,
-            0,
+            assetMetadata.initialMetadata.additionalFee,
             assetMetadata.initialMetadata.bankChargesFee
         );
         return
@@ -442,12 +429,78 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     }
 
     /**
-     * @dev Set the base URI by the given one
-     * @param _uri string representation of the assetNFT base URI on IPFS
+     * @dev Implementation of a setter for
+     * payment receipt date & amount received from buyer & amout received from supplier
+     * @param _assetNumber The unique uint Asset Number of the NFT
+     * @param _buyerAmountReceived The uint value of the amount received from buyer
+     * @param _supplierAmountReceived The uint value of the amount received from supplier
+     * @param _paymentReceiptDate The uint48 value of the payment receipt date
      */
-    function _setBaseURI(string memory _uri) internal {
-        emit BaseURISet(msg.sender, _uri);
-        baseURI = _uri;
+    function _setAdditionalMetadata(
+        uint _assetNumber,
+        uint _buyerAmountReceived,
+        uint _supplierAmountReceived,
+        uint48 _paymentReceiptDate
+    ) private {
+        require(
+            _metadata[_assetNumber].supplierAmountReserved == 0 &&
+                _metadata[_assetNumber].reservePaymentTransactionId == 0 &&
+                _metadata[_assetNumber].paymentReserveDate == 0,
+            "Asset is already settled"
+        );
+        _metadata[_assetNumber].paymentReceiptDate = _paymentReceiptDate;
+        _metadata[_assetNumber].buyerAmountReceived = _buyerAmountReceived;
+        _metadata[_assetNumber]
+            .supplierAmountReceived = _supplierAmountReceived;
+        emit AdditionalMetadataSet(
+            _assetNumber,
+            _buyerAmountReceived,
+            _supplierAmountReceived,
+            _paymentReceiptDate
+        );
+    }
+
+    /**
+     * @dev Implementation of a setter for the formulas contract
+     * @param _newFormulasAddress The address of the formulas calculation contract
+     */
+    function _setFormulas(address _newFormulasAddress) private {
+        address _oldFormulasAddress = address(formulas);
+        formulas = IFormulas(_newFormulasAddress);
+        emit FormulasSet(_oldFormulasAddress, _newFormulasAddress);
+    }
+
+    /**
+     * @dev Implementation of a setter for
+     * payment receipt date & amount received from buyer & amout received from supplier
+     * @param _assetNumber The unique uint Asset Number of the NFT
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
+     * @param _reservePaymentTransactionId The uint value of the payment transaction ID
+     * @param _paymentReserveDate The uint48 value of the reserve payment date
+     */
+    function _setAssetSettledMetadata(
+        uint _assetNumber,
+        uint _supplierAmountReserved,
+        uint _reservePaymentTransactionId,
+        uint48 _paymentReserveDate
+    ) private {
+        require(
+            _metadata[_assetNumber].supplierAmountReserved == 0 &&
+                _metadata[_assetNumber].reservePaymentTransactionId == 0 &&
+                _metadata[_assetNumber].paymentReserveDate == 0,
+            "Asset is already settled"
+        );
+        _metadata[_assetNumber].paymentReserveDate = _paymentReserveDate;
+        _metadata[_assetNumber]
+            .supplierAmountReserved = _supplierAmountReserved;
+        _metadata[_assetNumber]
+            .reservePaymentTransactionId = _reservePaymentTransactionId;
+        emit AssetSettledMetadataSet(
+            _assetNumber,
+            _supplierAmountReserved,
+            _reservePaymentTransactionId,
+            _paymentReserveDate
+        );
     }
 
     /**

@@ -16,19 +16,21 @@ interface IAssetNFT is IERC721 {
      * @param discountFee is a uint24 will have 2 decimals
      * @param lateFee is a uint24 will have 2 decimals
      * @param bankChargesFee is a uint24 will have 2 decimals
+     * @param additionalFee is a uint24 will have 2 decimals
      * @param gracePeriod is a uint16 will have 2 decimals
      * @param advanceRatio is a uint16 will have 2 decimals
      * @param dueDate is a uint48 will have 2 decimals
      * @param invoiceDate is a uint48 will have 2 decimals
      * @param fundsAdvancedDate is a uint48 will have 2 decimals
-     * @param invoiceAmount is a uint will have 6 decimals
-     * @param invoiceLimit is a uint will have 6 decimals
+     * @param invoiceAmount is a uint will have 2 decimals
+     * @param invoiceLimit is a uint will have 2 decimals
      */
     struct InitialMetadata {
         uint24 factoringFee;
         uint24 discountFee;
         uint24 lateFee;
         uint24 bankChargesFee;
+        uint24 additionalFee;
         uint16 gracePeriod;
         uint16 advanceRatio;
         uint48 dueDate;
@@ -42,14 +44,20 @@ interface IAssetNFT is IERC721 {
      * @title A new struct to define the metadata structure
      * @dev Defining a new type of struct called Metadata to store the asset metadata
      * @param paymentReceiptDate is a uint48 will have 2 decimals
-     * @param buyerAmountReceived is a uint will have 6 decimals
-     * @param supplierAmountReceived is a uint will have 6 decimals
+     * @param paymentReserveDate is a uint48 will have 2 decimals
+     * @param buyerAmountReceived is a uint will have 2 decimals
+     * @param supplierAmountReceived is a uint will have 2 decimals
+     * @param supplierAmountReserved is a uint will have 2 decimals
+     * @param reservePaymentTransactionId is a uint will have 2 decimals
      * @param initialMetadata is a InitialMetadata will hold all mandatory needed metadate to mint the AssetNFT
      */
     struct Metadata {
         uint48 paymentReceiptDate;
+        uint48 paymentReserveDate;
         uint buyerAmountReceived;
         uint supplierAmountReceived;
+        uint supplierAmountReserved;
+        uint reservePaymentTransactionId;
         InitialMetadata initialMetadata;
     }
 
@@ -66,54 +74,41 @@ interface IAssetNFT is IERC721 {
     );
 
     /**
-     * @dev Emitted when `_formulas` contract address is set to the AssetNFT by the `_setter`
-     * @param _setter The address of the contract that set the formulas address
-     * @param _formulas The address of the formulad smart contract
+     * @dev Emitted when `_newFormulas` contract address is set to the AssetNFT instead of `_oldFormulas`
+     * @param _oldFormulas The address of the old formulad smart contract
+     * @param _newFormulas The address of the new formulad smart contract
      */
-    event FormulasSet(address indexed _setter, address _formulas);
+    event FormulasSet(address _oldFormulas, address _newFormulas);
 
     /**
-     * @dev Emitted when `_paymentReceiptDate` is set to the AssetNFT number `_assetNumber` by the `_setter`
-     * @param _setter The address of the contract that set the date
+     * @dev Emitted when `_paymentReceiptDate` & `_buyerAmountReceived` & `_supplierAmountReceived`
+     * is set to the AssetNFT number `_assetNumber`
      * @param _assetNumber The uint of the asset NFT
+     * @param _buyerAmountReceived The uint represent the amount received from the buyer
+     * @param _supplierAmountReceived The uint represent the amount received from the supplier
      * @param _paymentReceiptDate The uint48 represent the date
      */
-    event PaymentReceiptDateSet(
-        address indexed _setter,
+    event AdditionalMetadataSet(
         uint _assetNumber,
+        uint _buyerAmountReceived,
+        uint _supplierAmountReceived,
         uint48 _paymentReceiptDate
     );
 
     /**
-     * @dev Emitted when `_buyerAmountReceived` is set to the AssetNFT number `_assetNumber` by the `_setter`
-     * @param _setter The address of the contract that set the amount receiver from the buyer
+     * @dev Emitted when `_supplierAmountReserved` & `_reservePaymentTransactionId` & `_paymentReserveDate`
+     * is set to the AssetNFT number `_assetNumber`
      * @param _assetNumber The uint of the asset NFT
-     * @param _buyerAmountReceived The uint48 represent the amount received from the buyer
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
+     * @param _reservePaymentTransactionId The uint value of the payment transaction ID
+     * @param _paymentReserveDate The uint48 value of the reserve payment date
      */
-    event BuyerAmountReceivedSet(
-        address indexed _setter,
+    event AssetSettledMetadataSet(
         uint _assetNumber,
-        uint _buyerAmountReceived
+        uint _supplierAmountReserved,
+        uint _reservePaymentTransactionId,
+        uint48 _paymentReserveDate
     );
-
-    /**
-     * @dev Emitted when `_supplierAmountReceived` is set to the AssetNFT number `_assetNumber` by the `_setter`
-     * @param _setter The address of the contract that set the amount receiver from the supplier
-     * @param _assetNumber The uint of the asset NFT
-     * @param _supplierAmountReceived The uint48 represent the amount received from the supplier
-     */
-    event SupplierAmountReceivedSet(
-        address indexed _setter,
-        uint _assetNumber,
-        uint _supplierAmountReceived
-    );
-
-    /**
-     * @dev Emitted when `_uri` is set by the `_setter`
-     * @param _setter The address of the contract that set the amount receiver from the supplier
-     * @param _uri The new base URI
-     */
-    event BaseURISet(address indexed _setter, string _uri);
 
     /**
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
@@ -128,39 +123,33 @@ interface IAssetNFT is IERC721 {
     ) external;
 
     /**
-     * @dev Implementation of a setter for formulas calculation instance
-     * @param _formulasAddress The address of the formulas calculation contract
-     */
-    function setFormulasContract(address _formulasAddress) external;
-
-    /**
-     * @dev Implementation of a setter for payment receipt date
+     * @dev Implementation of a setter for
+     * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
+     * @param _buyerAmountReceived The uint value of the amount received from buyer
+     * @param _supplierAmountReceived The uint value of the amount received from supplier
      * @param _paymentReceiptDate The uint48 value of the payment receipt date
      */
-    function setPaymentReceiptDate(
+    function setAdditionalMetadata(
         uint _assetNumber,
+        uint _buyerAmountReceived,
+        uint _supplierAmountReceived,
         uint48 _paymentReceiptDate
     ) external;
 
     /**
-     * @dev Implementation of a setter for amount received from buyer
+     * @dev Implementation of a setter for
+     * reserved payment date & amount sent to supplier & the payment transaction ID
      * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _buyerAmountReceived The uint value of the amount received from buyer
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
+     * @param _reservePaymentTransactionId The uint value of the payment transaction ID
+     * @param _paymentReserveDate The uint48 value of the reserve payment date
      */
-    function setBuyerAmountReceived(
+    function setAssetSettledMetadata(
         uint _assetNumber,
-        uint _buyerAmountReceived
-    ) external;
-
-    /**
-     * @dev Implementation of a setter for amount received from supplier
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _supplierAmountReceived The uint value of the amount received from supplier
-     */
-    function setSupplierAmountReceived(
-        uint _assetNumber,
-        uint _supplierAmountReceived
+        uint _supplierAmountReserved,
+        uint _reservePaymentTransactionId,
+        uint48 _paymentReserveDate
     ) external;
 
     /**

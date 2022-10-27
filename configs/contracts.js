@@ -1,4 +1,10 @@
-const NAMES = ['AssetNFT', 'Marketplace', 'NonReceiverMarketplace', 'Formulas'];
+const NAMES = [
+  'AssetNFT',
+  'Marketplace',
+  'NonReceiverMarketplace',
+  'Formulas',
+  'Token',
+];
 
 const CONTRACTS = { NAMES };
 

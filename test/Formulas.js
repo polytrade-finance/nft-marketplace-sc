@@ -48,6 +48,24 @@ describe('Formulas', function () {
         expect(scLateDays).to.equal(getValues(index).numberOfLateDays);
       });
 
+      it('Late days without set the payment receipt date', async function () {
+        const { formulas } = await loadFixture(deploy);
+
+        const paymentReceiptDate = 0;
+        const lateDays = '0';
+
+        const scLateDays = hre.ethers.utils.formatUnits(
+          await formulas.lateDays(
+            paymentReceiptDate,
+            getCase(index).dueDate,
+            getCase(index).gracePeriod,
+          ),
+          0,
+        );
+
+        expect(scLateDays).to.equal(lateDays);
+      });
+
       it('Late amount', async function () {
         const { formulas } = await loadFixture(deploy);
 
