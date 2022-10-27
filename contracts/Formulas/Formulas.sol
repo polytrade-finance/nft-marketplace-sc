@@ -87,8 +87,7 @@ contract Formulas is IFormulas {
         uint48 _dueDate,
         uint16 _gracePeriod
     ) external pure returns (uint16) {
-        if (_paymentReceiptDate == 0 || _paymentReceiptDate < _dueDate)
-            return 0;
+        if (_paymentReceiptDate < _dueDate) return 0;
 
         return
             uint16(((_paymentReceiptDate - _dueDate) / 1 days) - _gracePeriod);

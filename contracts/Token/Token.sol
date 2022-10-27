@@ -21,12 +21,4 @@ contract Token is ERC20 {
     function mint(address _receiver, uint _amount) public {
         _mint(_receiver, _amount);
     }
-
-    function approve(
-        address _owner,
-        address _spender,
-        uint _amount
-    ) public {
-        _approve(_owner, _spender, _amount);
-    }
 }

@@ -8,7 +8,7 @@ const MUMBAI_API_KEY = process.env.MUMBAI_API_KEY || '';
 const NETWORK = process.env.NETWORK || 'mumbai';
 const NFT_NAME = process.env.NFT_NAME || 'Polytrade';
 const NFT_SYMBOL = process.env.NFT_SYMBOL || 'TRADE';
-const TOKEN_NAME = process.env.TOKEN_NAME || 'USDToken';
+const TOKEN_NAME = process.env.TOKEN_NAME || 'StableToken';
 const TOKEN_SYMBOL = process.env.TOKEN_SYMBOL || 'USDT';
 const NFT_FORMULAS_CONTRACT_ADDRESS =
   process.env.NFT_FORMULAS_CONTRACT_ADDRESS ||

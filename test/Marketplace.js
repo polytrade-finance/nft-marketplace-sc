@@ -151,9 +151,8 @@ describe('Marketplace', function () {
       });
 
       it('Buy an asset from marketplace', async function () {
-        const { nft, owner, otherAddress, marketplace } = await loadFixture(
-          deploy,
-        );
+        const { nft, owner, usdt, otherAddress, marketplace } =
+          await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
@@ -164,6 +163,12 @@ describe('Marketplace', function () {
           await nft.approve(marketplace.address, _assetNumber);
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
+
+          const _amount = nft.calculateReserveAmount(_assetNumber);
+
+          await usdt
+            .connect(otherAddress)
+            .approve(marketplace.address, _amount);
 
           await marketplace.connect(otherAddress).buy(_assetNumber);
 

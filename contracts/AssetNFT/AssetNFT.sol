@@ -90,7 +90,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @dev Implementation of a setter for
      * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _supplierAmountReserved The uint value of the reserved amount send to supplier
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
      * @param _reservePaymentTransactionId The uint value of the payment transaction ID
      * @param _paymentReserveDate The uint48 value of the reserve payment date
      */
@@ -453,7 +453,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         _metadata[_assetNumber]
             .supplierAmountReceived = _supplierAmountReceived;
         emit AdditionalMetadataSet(
-            msg.sender,
             _assetNumber,
             _buyerAmountReceived,
             _supplierAmountReceived,
@@ -463,18 +462,19 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
 
     /**
      * @dev Implementation of a setter for the formulas contract
-     * @param _formulasAddress The address of the formulas calculation contract
+     * @param _newFormulasAddress The address of the formulas calculation contract
      */
-    function _setFormulas(address _formulasAddress) private {
-        formulas = IFormulas(_formulasAddress);
-        emit FormulasSet(msg.sender, _formulasAddress);
+    function _setFormulas(address _newFormulasAddress) private {
+        address _oldFormulasAddress = address(formulas);
+        formulas = IFormulas(_newFormulasAddress);
+        emit FormulasSet(_oldFormulasAddress, _newFormulasAddress);
     }
 
     /**
      * @dev Implementation of a setter for
      * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _supplierAmountReserved The uint value of the reserved amount send to supplier
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
      * @param _reservePaymentTransactionId The uint value of the payment transaction ID
      * @param _paymentReserveDate The uint48 value of the reserve payment date
      */
@@ -496,7 +496,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         _metadata[_assetNumber]
             .reservePaymentTransactionId = _reservePaymentTransactionId;
         emit AssetSettledMetadataSet(
-            msg.sender,
             _assetNumber,
             _supplierAmountReserved,
             _reservePaymentTransactionId,

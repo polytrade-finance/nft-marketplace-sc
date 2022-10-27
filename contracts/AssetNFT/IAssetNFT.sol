@@ -74,23 +74,21 @@ interface IAssetNFT is IERC721 {
     );
 
     /**
-     * @dev Emitted when `_formulas` contract address is set to the AssetNFT by the `_setter`
-     * @param _setter The address of the contract that set the formulas address
-     * @param _formulas The address of the formulad smart contract
+     * @dev Emitted when `_newFormulas` contract address is set to the AssetNFT instead of `_oldFormulas`
+     * @param _oldFormulas The address of the old formulad smart contract
+     * @param _newFormulas The address of the new formulad smart contract
      */
-    event FormulasSet(address indexed _setter, address _formulas);
+    event FormulasSet(address _oldFormulas, address _newFormulas);
 
     /**
      * @dev Emitted when `_paymentReceiptDate` & `_buyerAmountReceived` & `_supplierAmountReceived`
-     * is set to the AssetNFT number `_assetNumber` by the `_setter`
-     * @param _setter The address of the contract that set the date
+     * is set to the AssetNFT number `_assetNumber`
      * @param _assetNumber The uint of the asset NFT
      * @param _buyerAmountReceived The uint represent the amount received from the buyer
      * @param _supplierAmountReceived The uint represent the amount received from the supplier
      * @param _paymentReceiptDate The uint48 represent the date
      */
     event AdditionalMetadataSet(
-        address indexed _setter,
         uint _assetNumber,
         uint _buyerAmountReceived,
         uint _supplierAmountReceived,
@@ -99,15 +97,13 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Emitted when `_supplierAmountReserved` & `_reservePaymentTransactionId` & `_paymentReserveDate`
-     * is set to the AssetNFT number `_assetNumber` by the `_setter`
-     * @param _setter The address of the contract that set the date
+     * is set to the AssetNFT number `_assetNumber`
      * @param _assetNumber The uint of the asset NFT
-     * @param _supplierAmountReserved The uint value of the reserved amount send to supplier
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
      * @param _reservePaymentTransactionId The uint value of the payment transaction ID
      * @param _paymentReserveDate The uint48 value of the reserve payment date
      */
     event AssetSettledMetadataSet(
-        address indexed _setter,
         uint _assetNumber,
         uint _supplierAmountReserved,
         uint _reservePaymentTransactionId,
@@ -145,7 +141,7 @@ interface IAssetNFT is IERC721 {
      * @dev Implementation of a setter for
      * reserved payment date & amount sent to supplier & the payment transaction ID
      * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _supplierAmountReserved The uint value of the reserved amount send to supplier
+     * @param _supplierAmountReserved The uint value of the reserved amount sent to supplier
      * @param _reservePaymentTransactionId The uint value of the payment transaction ID
      * @param _paymentReserveDate The uint48 value of the reserve payment date
      */

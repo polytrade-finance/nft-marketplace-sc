@@ -20,8 +20,3 @@ Steps to deploy and verify:
 3- Use `npx hardhat deploy ContractNameIndex --network mumbai` command to run the deployment task on polygon mumbai network
 4- Check network list available to verify from the hardhat framework `npx hardhat verify --list-networks`
 5- Use `npx hardhat verify --contract contracts/SCFileName.sol:SCName --network mumbai SMART_CONTRACT_ADDRESS "Smart Contract Parameter 1" "Smart Contract Parameter 2"` to verify on polygon mumbai network
-
-[
-  ["50","500","1800","1000","0","3","8500","1668211200","1665360000","1665619200","1000000","1000000"],
-  "1668470400","1000000","0","1668729600","0","1"
-]
