@@ -67,16 +67,6 @@ describe('Marketplace', function () {
       getCase(_caseNumber).invoiceLimit,
     ];
 
-    const _metadata = [
-      _initialMetadata,
-      getCase(_caseNumber).paymentReceiptDate,
-      getCase(_caseNumber).buyerAmountReceived,
-      getCase(_caseNumber).supplierAmountReceived,
-      getCase(_caseNumber).paymentReserveDate,
-      getCase(_caseNumber).supplierAmountReserved,
-      getCase(_caseNumber).reservePaymentTransactionId,
-    ];
-
     describe(`Statement for test case N#${_caseNumber + 1}`, function () {
       it('Marketplace should be able to receive AssetNFTs - transferFrom', async function () {
         const { nft, owner, marketplace } = await loadFixture(deploy);
