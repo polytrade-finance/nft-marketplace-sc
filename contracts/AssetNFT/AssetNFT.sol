@@ -17,7 +17,8 @@ import "../Formulas/IFormulas.sol";
  */
 contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     IFormulas public formulas;
-    string public assetBaseURI;
+    string public baseURI;
+
     /**
      * @dev Mapping will be indexing the metadata for each AssetNFT by its Asset Number
      */
@@ -27,13 +28,16 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
      * @dev Constructor will call the parent one to create an ERC721 with specific name and symbol
      * @param _name String defining the name of the new ERC721 token
      * @param _symbol String defining the symbol of the new ERC721 token
+     * @param _baseURI The string of the asset base URI
      * @param _formulasAddress The address of the formulas calculation contract
      */
     constructor(
         string memory _name,
         string memory _symbol,
+        string memory _baseURI,
         address _formulasAddress
     ) ERC721(_name, _symbol) {
+        _setBaseURI(_baseURI);
         _setFormulas(_formulasAddress);
     }
 
@@ -68,14 +72,10 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
 
     /**
      * @dev Implementation of a setter for the asset base URI
-     * @param _newAssetBaseURI The string of the asset base URI
+     * @param _newBaseURI The string of the asset base URI
      */
-    function setAssetBaseURI(string memory _newAssetBaseURI)
-        external
-        onlyOwner
-    {
-        emit AssetBaseURISet(assetBaseURI, _newAssetBaseURI);
-        assetBaseURI = _newAssetBaseURI;
+    function setBaseURI(string memory _newBaseURI) external onlyOwner {
+        _setBaseURI(_newBaseURI);
     }
 
     /**
@@ -133,16 +133,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         returns (Metadata memory)
     {
         return _getAsset(_assetNumber);
-    }
-
-    /**
-     * @dev Implementation of a getter for asset NFT URI
-     * @return string The URI for the asset NFT
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     */
-    function assetURI(uint _assetNumber) external view returns (string memory) {
-        string memory _stringAssetNumber = Strings.toString(_assetNumber);
-        return string.concat(assetBaseURI, _stringAssetNumber);
     }
 
     /**
@@ -316,6 +306,22 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     }
 
     /**
+     * @dev Implementation of a getter for asset NFT URI
+     * @return string The URI for the asset NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
+     */
+    function tokenURI(uint _assetNumber)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        string memory _stringAssetNumber = Strings.toString(_assetNumber);
+        return string.concat(baseURI, _stringAssetNumber);
+    }
+
+    /**
      * @dev Implementation of a setter for
      * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
@@ -355,6 +361,16 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         address _oldFormulasAddress = address(formulas);
         formulas = IFormulas(_newFormulasAddress);
         emit FormulasSet(_oldFormulasAddress, _newFormulasAddress);
+    }
+
+    /**
+     * @dev Implementation of a setter for the asset base URI
+     * @param _newBaseURI The string of the asset base URI
+     */
+    function _setBaseURI(string memory _newBaseURI) private {
+        string memory _oldBaseURI = baseURI;
+        baseURI = _newBaseURI;
+        emit AssetBaseURISet(_oldBaseURI, _newBaseURI);
     }
 
     /**

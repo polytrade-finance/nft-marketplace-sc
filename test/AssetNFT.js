@@ -15,8 +15,6 @@ describe('AssetNFT', function () {
   const _wrongTokenIndex = 1;
   const _zeroAddress = hre.ethers.constants.AddressZero;
 
-  const _baseIpfsURI = 'https://ipfs.io/ipfs/';
-
   async function deploy() {
     const [owner, otherAddress] = await hre.ethers.getSigners();
 
@@ -27,6 +25,7 @@ describe('AssetNFT', function () {
     const nft = await NFT.deploy(
       CONSTANTS.NFT_NAME,
       CONSTANTS.NFT_SYMBOL,
+      CONSTANTS.NFT_BASE_URI,
       formulas.address,
     );
 
@@ -569,11 +568,11 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setAssetBaseURI(_baseIpfsURI);
+          await nft.setBaseURI(CONSTANTS.NFT_BASE_URI);
 
-          const assetURI = await nft.assetURI(_assetNumber);
+          const assetURI = await nft.tokenURI(_assetNumber);
 
-          expect(assetURI).to.equal(`${_baseIpfsURI}${_assetNumber}`);
+          expect(assetURI).to.equal(`${CONSTANTS.NFT_BASE_URI}${_assetNumber}`);
         }
       });
     });

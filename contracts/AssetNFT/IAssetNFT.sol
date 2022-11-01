@@ -137,9 +137,9 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Implementation of a setter for the asset base URI
-     * @param _newAssetBaseURI The string of the asset base URI
+     * @param _newBaseURI The string of the asset base URI
      */
-    function setAssetBaseURI(string memory _newAssetBaseURI) external;
+    function setBaseURI(string memory _newBaseURI) external;
 
     /**
      * @dev Implementation of a setter for
@@ -180,13 +180,6 @@ interface IAssetNFT is IERC721 {
         external
         view
         returns (Metadata memory);
-
-    /**
-     * @dev Implementation of a getter for asset NFT URI
-     * @return string The URI for the asset NFT
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     */
-    function assetURI(uint _assetNumber) external view returns (string memory);
 
     /**
      * @dev Calculate the number of late days

@@ -21,6 +21,7 @@ describe('Marketplace', function () {
     const nft = await NFT.deploy(
       CONSTANTS.NFT_NAME,
       CONSTANTS.NFT_SYMBOL,
+      CONSTANTS.NFT_BASE_URI,
       formulas.address,
     );
 
