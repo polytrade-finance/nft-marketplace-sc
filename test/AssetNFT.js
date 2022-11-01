@@ -15,6 +15,8 @@ describe('AssetNFT', function () {
   const _wrongTokenIndex = 1;
   const _zeroAddress = hre.ethers.constants.AddressZero;
 
+  const _baseIpfsURI = 'https://ipfs.io/ipfs/';
+
   async function deploy() {
     const [owner, otherAddress] = await hre.ethers.getSigners();
 
@@ -554,6 +556,24 @@ describe('AssetNFT', function () {
           const invoiceTenure = await nft.calculateInvoiceTenure(_assetNumber);
 
           expect(financeTenure).to.equal(invoiceTenure);
+        }
+      });
+
+      it('Set asset URI', async function () {
+        const { nft, owner } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due less than 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+
+          await nft.setAssetURI(_assetNumber, `${_baseIpfsURI}${_assetNumber}`);
+
+          const assetURI = await nft.tokenURI(_assetNumber);
+
+          expect(assetURI).to.equal(`${_baseIpfsURI}${_assetNumber}`);
         }
       });
     });
