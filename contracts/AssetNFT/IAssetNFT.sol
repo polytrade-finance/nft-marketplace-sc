@@ -112,11 +112,10 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Emitted when `_newURI` is set to the AssetNFT instead of `_oldURI` by `_assetNumber`
-     * @param _assetNumber The uint of the asset NFT
-     * @param _oldURI The old URI for the asset NFT
-     * @param _newURI The new URI for the asset NFT
+     * @param _oldAssetBaseURI The old URI for the asset NFT
+     * @param _newAssetBaseURI The new URI for the asset NFT
      */
-    event AssetURISet(uint _assetNumber, string _oldURI, string _newURI);
+    event AssetBaseURISet(string _oldAssetBaseURI, string _newAssetBaseURI);
 
     /**
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
@@ -129,6 +128,18 @@ interface IAssetNFT is IERC721 {
         uint _assetNumber,
         InitialMetadata memory _initialMetadata
     ) external;
+
+    /**
+     * @dev Implementation of a setter for the formulas contract
+     * @param _formulasAddress The address of the formulas calculation contract
+     */
+    function setFormulas(address _formulasAddress) external;
+
+    /**
+     * @dev Implementation of a setter for the asset base URI
+     * @param _newAssetBaseURI The string of the asset base URI
+     */
+    function setAssetBaseURI(string memory _newAssetBaseURI) external;
 
     /**
      * @dev Implementation of a setter for
@@ -169,6 +180,13 @@ interface IAssetNFT is IERC721 {
         external
         view
         returns (Metadata memory);
+
+    /**
+     * @dev Implementation of a getter for asset NFT URI
+     * @return string The URI for the asset NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
+     */
+    function assetURI(uint _assetNumber) external view returns (string memory);
 
     /**
      * @dev Calculate the number of late days

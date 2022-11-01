@@ -569,9 +569,9 @@ describe('AssetNFT', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          await nft.setAssetURI(_assetNumber, `${_baseIpfsURI}${_assetNumber}`);
+          await nft.setAssetBaseURI(_baseIpfsURI);
 
-          const assetURI = await nft.tokenURI(_assetNumber);
+          const assetURI = await nft.assetURI(_assetNumber);
 
           expect(assetURI).to.equal(`${_baseIpfsURI}${_assetNumber}`);
         }

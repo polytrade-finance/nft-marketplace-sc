@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./IAssetNFT.sol";
 import "../Formulas/IFormulas.sol";
 
@@ -14,8 +15,9 @@ import "../Formulas/IFormulas.sol";
  * @custom:access Accessible only by the owner
  * @custom:indexing Enumerable token can be indexed
  */
-contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable, ERC721URIStorage {
+contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     IFormulas public formulas;
+    string public assetBaseURI;
     /**
      * @dev Mapping will be indexing the metadata for each AssetNFT by its Asset Number
      */
@@ -65,6 +67,18 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable, ERC721URIStorage {
     }
 
     /**
+     * @dev Implementation of a setter for the asset base URI
+     * @param _newAssetBaseURI The string of the asset base URI
+     */
+    function setAssetBaseURI(string memory _newAssetBaseURI)
+        external
+        onlyOwner
+    {
+        emit AssetBaseURISet(assetBaseURI, _newAssetBaseURI);
+        assetBaseURI = _newAssetBaseURI;
+    }
+
+    /**
      * @dev Implementation of a setter for
      * payment receipt date & amount received from buyer & amout received from supplier
      * @param _assetNumber The unique uint Asset Number of the NFT
@@ -109,19 +123,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable, ERC721URIStorage {
     }
 
     /**
-     * @dev It uses the `_setTokenURI` in ERC721URIStorage
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     * @param _newAssetURI The string URI related to the assett
-     */
-    function setAssetURI(uint _assetNumber, string memory _newAssetURI)
-        external
-    {
-        string memory _oldAssetURI = super.tokenURI(_assetNumber);
-        _setTokenURI(_assetNumber, _newAssetURI);
-        emit AssetURISet(_assetNumber, _oldAssetURI, _newAssetURI);
-    }
-
-    /**
      * @dev Implementation of a getter for asset metadata
      * @return Metadata The metadata related to a specific asset
      * @param _assetNumber The unique uint Asset Number of the NFT
@@ -132,6 +133,16 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable, ERC721URIStorage {
         returns (Metadata memory)
     {
         return _getAsset(_assetNumber);
+    }
+
+    /**
+     * @dev Implementation of a getter for asset NFT URI
+     * @return string The URI for the asset NFT
+     * @param _assetNumber The unique uint Asset Number of the NFT
+     */
+    function assetURI(uint _assetNumber) external view returns (string memory) {
+        string memory _stringAssetNumber = Strings.toString(_assetNumber);
+        return string.concat(assetBaseURI, _stringAssetNumber);
     }
 
     /**
@@ -302,59 +313,6 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable, ERC721URIStorage {
         returns (uint)
     {
         return _calculateTotalAmountReceived(_assetNumber);
-    }
-
-    /**
-     * @dev Override the ERC721URIStorage function
-     * @return string Asset URI
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     */
-    function tokenURI(uint _assetNumber)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
-        return super.tokenURI(_assetNumber);
-    }
-
-    /**
-     * @dev Override the IRC165 function
-     * @return bool equals to true if this contract implements the interface defined by `_interfaceId`
-     * @param _interfaceId bytes4 interface ID
-     */
-    function supportsInterface(bytes4 _interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable, IERC165)
-        returns (bool)
-    {
-        return super.supportsInterface(_interfaceId);
-    }
-
-    /**
-     * @dev Override the ERC721Enumerable function
-     * @param _from Address of the asset NFT owner
-     * @param _to Address of the asset NFT buyer
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     */
-    function _beforeTokenTransfer(
-        address _from,
-        address _to,
-        uint _assetNumber
-    ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(_from, _to, _assetNumber);
-    }
-
-    /**
-     * @dev Override the ERC721URIStorage function
-     * @param _assetNumber The unique uint Asset Number of the NFT
-     */
-    function _burn(uint _assetNumber)
-        internal
-        override(ERC721, ERC721URIStorage)
-    {
-        super._burn(_assetNumber);
     }
 
     /**
