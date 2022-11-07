@@ -8,8 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
  * @author Polytrade.Finance
  * @dev Implementation of all AssetNFT trading operations
  */
+/* solhint-disable */
 contract NonReceiverMarketplace {
-    function _helloWorld() internal pure returns (string memory) {
-        return "Hello World!";
-    }
+
 }

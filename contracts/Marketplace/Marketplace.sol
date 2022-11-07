@@ -15,56 +15,75 @@ import "../Token/Token.sol";
  * @custom:receiver Receiver contract able to receiver tokens
  */
 contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
-    IAssetNFT public assetNFT;
-    Token public stableToken;
+    IAssetNFT private _assetNFT;
+    Token private _stableToken;
 
     /**
      * @dev Constructor for the main Marketplace
-     * @param _assetNFTAddress The address of the Asset NFT used in the marketplace
-     * @param _stableTokenAddress The address of the stableToken (ERC20) contract
+     * @param assetNFTAddress The address of the Asset NFT used in the marketplace
+     * @param stableTokenAddress The address of the stableToken (ERC20) contract
      */
-    constructor(address _assetNFTAddress, address _stableTokenAddress) {
-        _setAssetNFT(_assetNFTAddress);
-        _setStableToken(_stableTokenAddress);
+    constructor(address assetNFTAddress, address stableTokenAddress) {
+        _setAssetNFT(assetNFTAddress);
+        _setStableToken(stableTokenAddress);
     }
 
     /**
      * @dev Implementation of a setter for the asset NFT contract
-     * @param _assetNFTAddress The address of the asset NFT contract
+     * @param assetNFTAddress The address of the asset NFT contract
      */
-    function setAssetNFT(address _assetNFTAddress) external onlyOwner {
-        _setAssetNFT(_assetNFTAddress);
+    function setAssetNFT(address assetNFTAddress) external onlyOwner {
+        _setAssetNFT(assetNFTAddress);
     }
 
     /**
      * @dev Implementation of a setter for the ERC20 token
-     * @param _stableTokenAddress The address of the stableToken (ERC20) contract
+     * @param stableTokenAddress The address of the stableToken (ERC20) contract
      */
-    function setStableToken(address _stableTokenAddress) external onlyOwner {
-        _setStableToken(_stableTokenAddress);
+    function setStableToken(address stableTokenAddress) external onlyOwner {
+        _setStableToken(stableTokenAddress);
     }
 
     /**
      * @dev Implementation of the function used to buy Asset NFT
-     * @param _assetNumber The uint unique number of the Asset NFT
+     * @param assetNumber The uint unique number of the Asset NFT
      */
-    function buy(uint _assetNumber) external {
-        address _owner = assetNFT.ownerOf(_assetNumber);
-        require(_owner != address(0), "Asset does not exist");
-        uint _amount = assetNFT.calculateReserveAmount(_assetNumber);
-        assetNFT.safeTransferFrom(_owner, msg.sender, _assetNumber);
-        stableToken.transferFrom(msg.sender, _owner, _amount);
+    function buy(uint assetNumber) external {
+        address assetOwner = _assetNFT.ownerOf(assetNumber);
+        require(assetOwner != address(0), "Asset does not exist");
+        uint amount = _assetNFT.calculateReserveAmount(assetNumber);
+        _assetNFT.safeTransferFrom(assetOwner, msg.sender, assetNumber);
+        require(
+            _stableToken.transferFrom(msg.sender, assetOwner, amount),
+            "Transfer failed"
+        );
     }
 
     /**
      * @dev Implementation of the function used to disbuse money
-     * @param _assetNumber The uint unique number of the Asset NFT
+     * @param assetNumber The uint unique number of the Asset NFT
      * @return int the required amount to be paied
      */
-    function disburse(uint _assetNumber) external view returns (int) {
-        int _amount = assetNFT.calculateNetAmountPayableToClient(_assetNumber);
+    function disburse(uint assetNumber) external view returns (int) {
+        int amount = _assetNFT.calculateNetAmountPayableToClient(assetNumber);
 
-        return _amount;
+        return amount;
+    }
+
+    /**
+     * @dev Implementation of a getter for the asset NFT contract
+     * @return address The address of the asset NFT contract
+     */
+    function getAssetNFT() external view returns (address) {
+        return address(_assetNFT);
+    }
+
+    /**
+     * @dev Implementation of a getter for the stable coin contract
+     * @return address The address of the stable coin contract
+     */
+    function getStableCoin() external view returns (address) {
+        return address(_stableToken);
     }
 
     /**
@@ -92,20 +111,20 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of a setter for the asset NFT contract
-     * @param _newAssetNFTAddress The address of the asset NFT contract
+     * @param newAssetNFTAddress The address of the asset NFT contract
      */
-    function _setAssetNFT(address _newAssetNFTAddress) private {
-        address _oldAssetNFTAddress = address(assetNFT);
-        assetNFT = IAssetNFT(_newAssetNFTAddress);
-        emit AssetNFTSet(_oldAssetNFTAddress, _newAssetNFTAddress);
+    function _setAssetNFT(address newAssetNFTAddress) private {
+        address oldAssetNFTAddress = address(_assetNFT);
+        _assetNFT = IAssetNFT(newAssetNFTAddress);
+        emit AssetNFTSet(oldAssetNFTAddress, newAssetNFTAddress);
     }
 
     /**
      * @dev Implementation of a setter for the ERC20 token
-     * @param _stableTokenAddress The address of the stableToken (ERC20) contract
+     * @param stableTokenAddress The address of the stableToken (ERC20) contract
      */
-    function _setStableToken(address _stableTokenAddress) private {
-        stableToken = Token(_stableTokenAddress);
-        emit StableTokenSet(_stableTokenAddress);
+    function _setStableToken(address stableTokenAddress) private {
+        _stableToken = Token(stableTokenAddress);
+        emit StableTokenSet(stableTokenAddress);
     }
 }

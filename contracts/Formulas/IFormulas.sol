@@ -17,7 +17,7 @@ interface IFormulas {
      * @param _advancedAmount uint calculated based on user inputs
      */
 
-    function discountAmount(
+    function discountAmountCalculation(
         uint24 _discountFee,
         uint16 _financeTenure,
         uint16 _lateDays,
@@ -30,7 +30,7 @@ interface IFormulas {
      * @param _invoiceLimit uint input from user
      * @param _advanceRatio uint16 input from user
      */
-    function advancedAmount(uint _invoiceLimit, uint16 _advanceRatio)
+    function advancedAmountCalculation(uint _invoiceLimit, uint16 _advanceRatio)
         external
         pure
         returns (uint);
@@ -41,10 +41,10 @@ interface IFormulas {
      * @param _invoiceAmount uint input from user
      * @param _factoringFee uint24 input from user
      */
-    function factoringAmount(uint _invoiceAmount, uint24 _factoringFee)
-        external
-        pure
-        returns (uint);
+    function factoringAmountCalculation(
+        uint _invoiceAmount,
+        uint24 _factoringFee
+    ) external pure returns (uint);
 
     /**
      * @dev Calculate the late amount: (Late Fee (%) * (Advanced Amount / 365) * Late Days)
@@ -53,7 +53,7 @@ interface IFormulas {
      * @param _lateDays uint16 calculated based on user inputs
      * @param _advancedAmount uint calculated based on user inputs
      */
-    function lateAmount(
+    function lateAmountCalculation(
         uint24 _lateFee,
         uint16 _lateDays,
         uint _advancedAmount
@@ -67,7 +67,7 @@ interface IFormulas {
      * @param _advancedAmount uint calculated based on user inputs
      * @param _totalFees uint24 calculated based on user inputs
      */
-    function netAmountPayableToClient(
+    function netAmountPayableToClientCalculation(
         uint _totalAmountReceived,
         uint _advancedAmount,
         uint _totalFees
@@ -81,7 +81,7 @@ interface IFormulas {
      * @param _dueDate uint48 input from user
      * @param _gracePeriod uint16 input from user
      */
-    function lateDays(
+    function lateDaysCalculation(
         uint48 _paymentReceiptDate,
         uint48 _dueDate,
         uint16 _gracePeriod
@@ -93,7 +93,7 @@ interface IFormulas {
      * @param _dueDate uint48 input from user
      * @param _invoiceDate uint48 input from user
      */
-    function invoiceTenure(uint48 _dueDate, uint48 _invoiceDate)
+    function invoiceTenureCalculation(uint48 _dueDate, uint48 _invoiceDate)
         external
         pure
         returns (uint16);
@@ -104,7 +104,7 @@ interface IFormulas {
      * @param _invoiceAmount uint input from user
      * @param _advancedAmount uint calculated based on user inputs
      */
-    function reserveAmount(uint _invoiceAmount, uint _advancedAmount)
+    function reserveAmountCalculation(uint _invoiceAmount, uint _advancedAmount)
         external
         pure
         returns (uint);
@@ -115,7 +115,7 @@ interface IFormulas {
      * @param _paymentReceiptDate uint48 input from user
      * @param _fundsAdvancedDate uint48 input from user
      */
-    function financeTenure(
+    function financeTenureCalculation(
         uint48 _paymentReceiptDate,
         uint48 _fundsAdvancedDate
     ) external pure returns (uint16);
@@ -129,7 +129,7 @@ interface IFormulas {
      * @param _additionalFee uint input from user
      * @param _bankChargesFee uint input from user
      */
-    function totalFees(
+    function totalFeesCalculation(
         uint _factoringAmount,
         uint _discountAmount,
         uint _additionalFee,
@@ -143,7 +143,7 @@ interface IFormulas {
      * @param _buyerAmountReceived uint input from user
      * @param _supplierAmountReceived uint input from user
      */
-    function totalAmountReceived(
+    function totalAmountReceivedCalculation(
         uint _buyerAmountReceived,
         uint _supplierAmountReceived
     ) external pure returns (uint);

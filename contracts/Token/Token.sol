@@ -10,15 +10,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  */
 contract Token is ERC20 {
     constructor(
-        string memory _name,
-        string memory _symbol,
-        address _receiver,
-        uint _totalSupply
-    ) ERC20(_name, _symbol) {
-        _mint(_receiver, _totalSupply * 1 ether);
+        string memory name_,
+        string memory symbol_,
+        address receiver_,
+        uint totalSupply_
+    ) ERC20(name_, symbol_) {
+        _mint(receiver_, totalSupply_ * 1 ether);
     }
 
-    function mint(address _receiver, uint _amount) public {
-        _mint(_receiver, _amount);
+    function mint(address receiver, uint amount) external {
+        _mint(receiver, amount);
     }
 }
