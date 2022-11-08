@@ -21,14 +21,14 @@ contract Formulas is IFormulas {
      * @param advancedAmount uint calculated based on user inputs
      */
     function discountAmountCalculation(
-        uint24 discountFee,
-        uint16 financeTenure,
-        uint16 lateDays,
+        uint discountFee,
+        uint financeTenure,
+        uint lateDays,
         uint advancedAmount
     ) external pure returns (uint) {
         return
-            (((discountFee * advancedAmount) * (financeTenure - lateDays)) /
-                365) / _PRECISION;
+            (((uint24(discountFee) * advancedAmount) *
+                (uint16(financeTenure) - uint16(lateDays))) / 365) / _PRECISION;
     }
 
     /**
@@ -37,12 +37,12 @@ contract Formulas is IFormulas {
      * @param invoiceLimit uint input from user
      * @param advanceRatio uint16 input from user
      */
-    function advancedAmountCalculation(uint invoiceLimit, uint16 advanceRatio)
+    function advancedAmountCalculation(uint invoiceLimit, uint advanceRatio)
         external
         pure
         returns (uint)
     {
-        return (invoiceLimit * advanceRatio) / _PRECISION;
+        return (invoiceLimit * uint16(advanceRatio)) / _PRECISION;
     }
 
     /**
@@ -51,12 +51,12 @@ contract Formulas is IFormulas {
      * @param invoiceAmount uint input from user
      * @param factoringFee uint24 input from user
      */
-    function factoringAmountCalculation(uint invoiceAmount, uint24 factoringFee)
+    function factoringAmountCalculation(uint invoiceAmount, uint factoringFee)
         external
         pure
         returns (uint)
     {
-        return (invoiceAmount * factoringFee) / _PRECISION;
+        return (invoiceAmount * uint24(factoringFee)) / _PRECISION;
     }
 
     /**
@@ -67,11 +67,13 @@ contract Formulas is IFormulas {
      * @param advancedAmount uint calculated based on user inputs
      */
     function lateAmountCalculation(
-        uint24 lateFee,
-        uint16 lateDays,
+        uint lateFee,
+        uint lateDays,
         uint advancedAmount
     ) external pure returns (uint) {
-        return ((lateFee * (advancedAmount) * lateDays) / 365) / _PRECISION;
+        return
+            ((uint24(lateFee) * (advancedAmount) * uint16(lateDays)) / 365) /
+            _PRECISION;
     }
 
     /**
@@ -83,13 +85,17 @@ contract Formulas is IFormulas {
      * @param gracePeriod uint16 input from user
      */
     function lateDaysCalculation(
-        uint48 paymentReceiptDate,
-        uint48 dueDate,
-        uint16 gracePeriod
-    ) external pure returns (uint16) {
-        if (paymentReceiptDate < dueDate) return 0;
+        uint paymentReceiptDate,
+        uint dueDate,
+        uint gracePeriod
+    ) external pure returns (uint) {
+        if (uint48(paymentReceiptDate) < uint48(dueDate)) return 0;
 
-        return uint16(((paymentReceiptDate - dueDate) / 1 days) - gracePeriod);
+        return
+            uint(
+                ((uint48(paymentReceiptDate) - uint48(dueDate)) / 1 days) -
+                    uint16(gracePeriod)
+            );
     }
 
     /**
@@ -98,12 +104,12 @@ contract Formulas is IFormulas {
      * @param dueDate uint48 input from user
      * @param invoiceDate uint48 input from user
      */
-    function invoiceTenureCalculation(uint48 dueDate, uint48 invoiceDate)
+    function invoiceTenureCalculation(uint dueDate, uint invoiceDate)
         external
         pure
-        returns (uint16)
+        returns (uint)
     {
-        return uint16((dueDate - invoiceDate) / 1 days);
+        return uint((uint48(dueDate) - uint48(invoiceDate)) / 1 days);
     }
 
     /**
@@ -127,10 +133,14 @@ contract Formulas is IFormulas {
      * @param fundsAdvancedDate uint48 input from user
      */
     function financeTenureCalculation(
-        uint48 paymentReceiptDate,
-        uint48 fundsAdvancedDate
-    ) external pure returns (uint16) {
-        return uint16((paymentReceiptDate - fundsAdvancedDate) / 1 days);
+        uint paymentReceiptDate,
+        uint fundsAdvancedDate
+    ) external pure returns (uint) {
+        return
+            uint(
+                (uint48(paymentReceiptDate) - uint48(fundsAdvancedDate)) /
+                    1 days
+            );
     }
 
     /**

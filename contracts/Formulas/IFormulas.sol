@@ -11,16 +11,16 @@ interface IFormulas {
      * @dev Calculate the discount amount:
      * (Discount Fee (%) * (Advanced Amount / 365) * (Finance Tenure - Late Days))
      * @return uint Amount of the Discount
-     * @param _discountFee uint16 input from user
-     * @param _financeTenure uint16 input from user
-     * @param _lateDays uint16 calculated based on user inputs
+     * @param _discountFee uint input from user
+     * @param _financeTenure uint input from user
+     * @param _lateDays uint calculated based on user inputs
      * @param _advancedAmount uint calculated based on user inputs
      */
 
     function discountAmountCalculation(
-        uint24 _discountFee,
-        uint16 _financeTenure,
-        uint16 _lateDays,
+        uint _discountFee,
+        uint _financeTenure,
+        uint _lateDays,
         uint _advancedAmount
     ) external pure returns (uint);
 
@@ -28,9 +28,9 @@ interface IFormulas {
      * @dev Calculate the advanced amount: (Invoice Limit * Advance Ratio)
      * @return uint Advanced Amount
      * @param _invoiceLimit uint input from user
-     * @param _advanceRatio uint16 input from user
+     * @param _advanceRatio uint input from user
      */
-    function advancedAmountCalculation(uint _invoiceLimit, uint16 _advanceRatio)
+    function advancedAmountCalculation(uint _invoiceLimit, uint _advanceRatio)
         external
         pure
         returns (uint);
@@ -39,64 +39,50 @@ interface IFormulas {
      * @dev Calculate the factoring amount: (Invoice Amount * Factoring Fee)
      * @return uint Factoring Amount
      * @param _invoiceAmount uint input from user
-     * @param _factoringFee uint24 input from user
+     * @param _factoringFee uint input from user
      */
-    function factoringAmountCalculation(
-        uint _invoiceAmount,
-        uint24 _factoringFee
-    ) external pure returns (uint);
+    function factoringAmountCalculation(uint _invoiceAmount, uint _factoringFee)
+        external
+        pure
+        returns (uint);
 
     /**
      * @dev Calculate the late amount: (Late Fee (%) * (Advanced Amount / 365) * Late Days)
      * @return uint Late Amount
-     * @param _lateFee uint24 input from user
-     * @param _lateDays uint16 calculated based on user inputs
+     * @param _lateFee uint input from user
+     * @param _lateDays uint calculated based on user inputs
      * @param _advancedAmount uint calculated based on user inputs
      */
     function lateAmountCalculation(
-        uint24 _lateFee,
-        uint16 _lateDays,
+        uint _lateFee,
+        uint _lateDays,
         uint _advancedAmount
     ) external pure returns (uint);
 
     /**
-     * @dev Calculate the net amount payable to the client:
-     * (Total amount received – Advanced amount – Total Fees)
-     * @return uint Net Amount Payable to the Client
-     * @param _totalAmountReceived uint calculated based on user inputs
-     * @param _advancedAmount uint calculated based on user inputs
-     * @param _totalFees uint24 calculated based on user inputs
-     */
-    function netAmountPayableToClientCalculation(
-        uint _totalAmountReceived,
-        uint _advancedAmount,
-        uint _totalFees
-    ) external pure returns (int);
-
-    /**
      * @dev Calculate the number of late days: (Payment Receipt Date - Due Date - Grace Period)
      * @notice Number of late days will never be less than ‘0’
-     * @return uint16 Number of Late Days
-     * @param _paymentReceiptDate uint48 input from user or can be set automatically
-     * @param _dueDate uint48 input from user
-     * @param _gracePeriod uint16 input from user
+     * @return uint Number of Late Days
+     * @param _paymentReceiptDate uint input from user or can be set automatically
+     * @param _dueDate uint input from user
+     * @param _gracePeriod uint input from user
      */
     function lateDaysCalculation(
-        uint48 _paymentReceiptDate,
-        uint48 _dueDate,
-        uint16 _gracePeriod
-    ) external pure returns (uint16);
+        uint _paymentReceiptDate,
+        uint _dueDate,
+        uint _gracePeriod
+    ) external pure returns (uint);
 
     /**
      * @dev Calculate the invoice tenure: (Due Date - Invoice Date)
-     * @return uint16 Invoice Tenure
-     * @param _dueDate uint48 input from user
-     * @param _invoiceDate uint48 input from user
+     * @return uint Invoice Tenure
+     * @param _dueDate uint input from user
+     * @param _invoiceDate uint4 input from user
      */
-    function invoiceTenureCalculation(uint48 _dueDate, uint48 _invoiceDate)
+    function invoiceTenureCalculation(uint _dueDate, uint _invoiceDate)
         external
         pure
-        returns (uint16);
+        returns (uint);
 
     /**
      * @dev Calculate the reserve amount: (Invoice Amount - Advanced Amount)
@@ -111,14 +97,14 @@ interface IFormulas {
 
     /**
      * @dev Calculate the finance tenure: (Payment Receipt Date - Date of Funds Advanced)
-     * @return uint16 Finance Tenure
-     * @param _paymentReceiptDate uint48 input from user
-     * @param _fundsAdvancedDate uint48 input from user
+     * @return uint Finance Tenure
+     * @param _paymentReceiptDate uint input from user
+     * @param _fundsAdvancedDate uint input from user
      */
     function financeTenureCalculation(
-        uint48 _paymentReceiptDate,
-        uint48 _fundsAdvancedDate
-    ) external pure returns (uint16);
+        uint _paymentReceiptDate,
+        uint _fundsAdvancedDate
+    ) external pure returns (uint);
 
     /**
      * @dev Calculate the total fees amount:
@@ -135,6 +121,20 @@ interface IFormulas {
         uint _additionalFee,
         uint _bankChargesFee
     ) external pure returns (uint);
+
+    /**
+     * @dev Calculate the net amount payable to the client:
+     * (Total amount received – Advanced amount – Total Fees)
+     * @return uint Net Amount Payable to the Client
+     * @param _totalAmountReceived uint calculated based on user inputs
+     * @param _advancedAmount uint calculated based on user inputs
+     * @param _totalFees uint calculated based on user inputs
+     */
+    function netAmountPayableToClientCalculation(
+        uint _totalAmountReceived,
+        uint _advancedAmount,
+        uint _totalFees
+    ) external pure returns (int);
 
     /**
      * @dev Calculate the total amount received:

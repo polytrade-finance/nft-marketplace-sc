@@ -64,8 +64,9 @@ describe('AssetNFT', function () {
       getCase(_caseNumber).buyerAmountReceived,
       getCase(_caseNumber).supplierAmountReceived,
       getCase(_caseNumber).paymentReserveDate,
-      getCase(_caseNumber).supplierAmountReserved,
+      getCase(_caseNumber).reservePaidToSupplier,
       getCase(_caseNumber).reservePaymentTransactionId,
+      getCase(_caseNumber).amountSentToLender,
     ];
 
     describe(`Statement for test case N#${_caseNumber + 1}`, function () {
@@ -751,6 +752,7 @@ describe('AssetNFT', function () {
                 _metadata[5],
                 _metadata[6],
                 _metadata[4],
+                _metadata[7],
               ),
           ).to.be.rejectedWith('Ownable: caller is not the owner');
         }
@@ -771,6 +773,7 @@ describe('AssetNFT', function () {
             _metadata[5],
             _metadata[6],
             _metadata[4],
+            _metadata[7],
           );
 
           await expect(
@@ -799,6 +802,7 @@ describe('AssetNFT', function () {
             _metadata[5],
             _metadata[6],
             _metadata[4],
+            _metadata[7],
           );
 
           await expect(
@@ -807,6 +811,7 @@ describe('AssetNFT', function () {
               _metadata[5],
               _metadata[6],
               _metadata[4],
+              _metadata[7],
             ),
           ).to.be.rejectedWith('Asset is already settled');
         }
