@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity 0.8.17;
 
 import "./IFormulas.sol";
 
@@ -89,13 +89,14 @@ contract Formulas is IFormulas {
         uint dueDate,
         uint gracePeriod
     ) external pure returns (uint) {
-        if (uint48(paymentReceiptDate) < uint48(dueDate)) return 0;
+        if (uint48(dueDate) <= uint48(paymentReceiptDate))
+            return
+                uint(
+                    ((uint48(paymentReceiptDate) - uint48(dueDate)) / 1 days) -
+                        uint16(gracePeriod)
+                );
 
-        return
-            uint(
-                ((uint48(paymentReceiptDate) - uint48(dueDate)) / 1 days) -
-                    uint16(gracePeriod)
-            );
+        return 0;
     }
 
     /**
