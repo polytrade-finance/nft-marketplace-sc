@@ -25,6 +25,7 @@ describe('AssetNFT', function () {
     const nft = await NFT.deploy(
       CONSTANTS.NFT_NAME,
       CONSTANTS.NFT_SYMBOL,
+      CONSTANTS.NFT_BASE_URI,
       formulas.address,
     );
 
@@ -554,6 +555,24 @@ describe('AssetNFT', function () {
           const invoiceTenure = await nft.calculateInvoiceTenure(_assetNumber);
 
           expect(financeTenure).to.equal(invoiceTenure);
+        }
+      });
+
+      it('Set asset URI', async function () {
+        const { nft, owner } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due less than 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+
+          await nft.setBaseURI(CONSTANTS.NFT_BASE_URI);
+
+          const assetURI = await nft.tokenURI(_assetNumber);
+
+          expect(assetURI).to.equal(`${CONSTANTS.NFT_BASE_URI}${_assetNumber}`);
         }
       });
     });

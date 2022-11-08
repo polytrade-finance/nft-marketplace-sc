@@ -111,6 +111,13 @@ interface IAssetNFT is IERC721 {
     );
 
     /**
+     * @dev Emitted when `_newURI` is set to the AssetNFT instead of `_oldURI` by `_assetNumber`
+     * @param _oldAssetBaseURI The old URI for the asset NFT
+     * @param _newAssetBaseURI The new URI for the asset NFT
+     */
+    event AssetBaseURISet(string _oldAssetBaseURI, string _newAssetBaseURI);
+
+    /**
      * @dev Implementation of a mint function that uses the predefined _mint() function from ERC721 standard
      * @param _receiver The receiver address of the newly minted NFT
      * @param _assetNumber The unique uint Asset Number of the NFT
@@ -121,6 +128,18 @@ interface IAssetNFT is IERC721 {
         uint _assetNumber,
         InitialMetadata memory _initialMetadata
     ) external;
+
+    /**
+     * @dev Implementation of a setter for the formulas contract
+     * @param _formulasAddress The address of the formulas calculation contract
+     */
+    function setFormulas(address _formulasAddress) external;
+
+    /**
+     * @dev Implementation of a setter for the asset base URI
+     * @param _newBaseURI The string of the asset base URI
+     */
+    function setBaseURI(string memory _newBaseURI) external;
 
     /**
      * @dev Implementation of a setter for
