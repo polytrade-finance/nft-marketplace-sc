@@ -39,9 +39,9 @@ interface IMarketplace {
     function buy(uint assetNumber) external;
 
     /**
-     * @dev Implementation of the function used to disbuse money
+     * @dev Implementation of the function used to disburse money
      * @param assetNumber The uint unique number of the Asset NFT
-     * @return int the required amount to be paied
+     * @return int the required amount to be paid
      */
     function disburse(uint assetNumber) external view returns (int);
 

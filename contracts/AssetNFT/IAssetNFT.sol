@@ -49,7 +49,7 @@ interface IAssetNFT is IERC721 {
      * @param supplierAmountReceived is a uint will have 2 decimals
      * @param supplierAmountReserved is a uint will have 2 decimals
      * @param reservePaymentTransactionId is a uint will have 2 decimals
-     * @param initialMetadata is a InitialMetadata will hold all mandatory needed metadate to mint the AssetNFT
+     * @param initialMetadata is a InitialMetadata will hold all mandatory needed metadata to mint the AssetNFT
      */
     struct Metadata {
         uint48 paymentReceiptDate;
@@ -75,8 +75,8 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Emitted when `newFormulas` contract address is set to the AssetNFT instead of `oldFormulas`
-     * @param oldFormulas The address of the old formulad smart contract
-     * @param newFormulas The address of the new formulad smart contract
+     * @param oldFormulas The address of the old formulas smart contract
+     * @param newFormulas The address of the new formulas smart contract
      */
     event FormulasSet(address oldFormulas, address newFormulas);
 
@@ -143,7 +143,7 @@ interface IAssetNFT is IERC721 {
 
     /**
      * @dev Implementation of a setter for
-     * payment receipt date & amount received from buyer & amout received from supplier
+     * Payment receipt date & amount paid by buyer & amount paid by supplier
      * @param assetNumber The unique uint Asset Number of the NFT
      * @param buyerAmountReceived The uint value of the amount received from buyer
      * @param supplierAmountReceived The uint value of the amount received from supplier

@@ -54,7 +54,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         require(
             ((initialMetadata.dueDate - initialMetadata.fundsAdvancedDate) /
                 1 days) >= 20,
-            "Asset due less than 20 days"
+            "Asset due within 20 days"
         );
         _metadata[assetNumber].initialMetadata = initialMetadata;
         _mint(receiver, assetNumber);
@@ -79,11 +79,11 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
 
     /**
      * @dev Implementation of a setter for
-     * payment receipt date & amount received from buyer & amout received from supplier
+     * Payment receipt date & amount paid by buyer & amount paid by supplier
      * @param assetNumber The unique uint Asset Number of the NFT
      * @param buyerAmountReceived The uint value of the amount received from buyer
      * @param supplierAmountReceived The uint value of the amount received from supplier
-     * @param paymentReceiptDate The uint48 value of the payment receipt date
+     * @param paymentReceiptDate The uint48 value of the payment receipt date 82472
      */
     function setAdditionalMetadata(
         uint assetNumber,
@@ -101,7 +101,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
 
     /**
      * @dev Implementation of a setter for
-     * payment receipt date & amount received from buyer & amout received from supplier
+     * Payment receipt date & amount paid by buyer & amount paid by supplier
      * @param assetNumber The unique uint Asset Number of the NFT
      * @param supplierAmountReserved The uint value of the reserved amount sent to supplier
      * @param reservePaymentTransactionId The uint value of the payment transaction ID
@@ -135,7 +135,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
     }
 
     /**
-     * @dev Implementation of a getter for the Formulas conract adress
+     * @dev Implementation of a getter for the Formulas contract address
      * @return string Formulas contract address used in the asset NFT
      */
     function getFormulas() external view returns (address) {
@@ -334,7 +334,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
 
     /**
      * @dev Implementation of a setter for
-     * payment receipt date & amount received from buyer & amout received from supplier
+     * Payment receipt date & amount paid by buyer & amount paid by supplier
      * @param assetNumber The unique uint Asset Number of the NFT
      * @param buyerAmountReceived The uint value of the amount received from buyer
      * @param supplierAmountReceived The uint value of the amount received from supplier
@@ -385,7 +385,7 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
 
     /**
      * @dev Implementation of a setter for
-     * payment receipt date & amount received from buyer & amout received from supplier
+     * Payment receipt date & amount paid by buyer & amount paid by supplier
      * @param assetNumber The unique uint Asset Number of the NFT
      * @param supplierAmountReserved The uint value of the reserved amount sent to supplier
      * @param reservePaymentTransactionId The uint value of the payment transaction ID

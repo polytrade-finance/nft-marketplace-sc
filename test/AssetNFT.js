@@ -75,7 +75,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           expect(await nft.balanceOf(owner.address)).to.equal(1);
@@ -88,7 +88,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
@@ -101,7 +101,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -156,7 +156,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(
             otherAddress.address,
@@ -177,7 +177,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(
             otherAddress.address,
@@ -197,7 +197,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -226,7 +226,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -251,7 +251,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -279,7 +279,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -305,7 +305,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -333,7 +333,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -361,7 +361,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -386,7 +386,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -412,7 +412,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -437,7 +437,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -463,7 +463,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -491,7 +491,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -519,7 +519,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -540,7 +540,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -564,7 +564,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -584,7 +584,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -604,7 +604,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await expect(
             nft
@@ -628,7 +628,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(
             otherAddress.address,
@@ -652,7 +652,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(
             otherAddress.address,
@@ -689,7 +689,7 @@ describe('AssetNFT', function () {
             _assetNumber,
             _criticalMetadata,
           ),
-        ).to.be.rejectedWith('Asset due less than 20 days');
+        ).to.be.rejectedWith('Asset due within 20 days');
       });
 
       it('Minting a new AssetNFT to the zero address', async function () {
@@ -698,7 +698,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(_zeroAddress, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await expect(
             nft.createAsset(_zeroAddress, _assetNumber, _initialMetadata),
@@ -716,7 +716,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await expect(
             nft
@@ -741,7 +741,7 @@ describe('AssetNFT', function () {
               _assetNumber,
               _initialMetadata,
             ),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await expect(
             nft
@@ -762,7 +762,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -790,7 +790,7 @@ describe('AssetNFT', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
