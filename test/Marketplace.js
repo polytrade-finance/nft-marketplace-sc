@@ -181,10 +181,30 @@ describe('Marketplace', function () {
 
           const disbursedAmount = await marketplace.disburse(_assetNumber);
 
-          // expect(disbursedAmount.value).to.equal(
-          //   await nft.calculateNetAmountPayableToClient(_assetNumber),
-          // );
+          expect(disbursedAmount).to.equal(
+            await nft.calculateNetAmountPayableToClient(_assetNumber),
+          );
         }
+      });
+
+      it('Set asset NFT address', async function () {
+        const { nft, marketplace } = await loadFixture(deploy);
+
+        await marketplace.setAssetNFT(nft.address);
+
+        const assetNFTAddress = await marketplace.getAssetNFT();
+
+        expect(assetNFTAddress).to.equal(nft.address);
+      });
+
+      it('Set stable token address', async function () {
+        const { usdt, marketplace } = await loadFixture(deploy);
+
+        await marketplace.setStableToken(usdt.address);
+
+        const stableTokenAddress = await marketplace.getStableCoin();
+
+        expect(stableTokenAddress).to.equal(usdt.address);
       });
     });
 
@@ -235,6 +255,22 @@ describe('Marketplace', function () {
             'ERC721: caller is not token owner nor approved',
           );
         }
+      });
+
+      it('Set asset NFT address', async function () {
+        const { otherAddress, nft, marketplace } = await loadFixture(deploy);
+
+        await expect(
+          marketplace.connect(otherAddress).setAssetNFT(nft.address),
+        ).to.be.rejectedWith('Ownable: caller is not the owner');
+      });
+
+      it('Set stable token address', async function () {
+        const { otherAddress, usdt, marketplace } = await loadFixture(deploy);
+
+        await expect(
+          marketplace.connect(otherAddress).setStableToken(usdt.address),
+        ).to.be.rejectedWith('Ownable: caller is not the owner');
       });
     });
   }

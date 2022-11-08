@@ -17,8 +17,4 @@ contract Token is ERC20 {
     ) ERC20(name_, symbol_) {
         _mint(receiver_, totalSupply_ * 1 ether);
     }
-
-    function mint(address receiver, uint amount) external {
-        _mint(receiver, amount);
-    }
 }
