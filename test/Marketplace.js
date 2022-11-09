@@ -287,6 +287,25 @@ describe('Marketplace', function () {
           );
         }
       });
+
+      it('Buy an asset with no stable coin allowance', async function () {
+        const { nft, owner, otherAddress, marketplace } = await loadFixture(
+          deploy,
+        );
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+          await nft.approve(marketplace.address, _assetNumber);
+
+          await expect(
+            marketplace.connect(otherAddress).buy(_assetNumber),
+          ).to.be.rejectedWith('ERC20: insufficient allowance');
+        }
+      });
     });
   }
 });
