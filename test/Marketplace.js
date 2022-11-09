@@ -8,6 +8,7 @@ const { getCase } = require('../configs/data.js');
 describe('Marketplace', function () {
   const _criticalCaseNumber = 10;
   const _assetNumber = 0;
+  const _invalidAssetNumber = 999;
 
   const _totalSupply = 1000000;
 
@@ -271,6 +272,20 @@ describe('Marketplace', function () {
         await expect(
           marketplace.connect(otherAddress).setStableToken(usdt.address),
         ).to.be.rejectedWith('Ownable: caller is not the owner');
+      });
+
+      it('Buy an asset NFT that not minted', async function () {
+        const { nft, owner, marketplace } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          await expect(marketplace.buy(_invalidAssetNumber)).to.be.rejectedWith(
+            'ERC721: invalid token ID',
+          );
+        }
       });
     });
   }

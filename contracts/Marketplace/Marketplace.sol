@@ -20,8 +20,8 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Constructor for the main Marketplace
-     * @param assetNFTAddress Address of the Asset NFT used in the marketplace
-     * @param stableTokenAddress Address of the stableToken (ERC20) contract
+     * @param assetNFTAddress, Address of the Asset NFT used in the marketplace
+     * @param stableTokenAddress, Address of the stableToken (ERC20) contract
      */
     constructor(address assetNFTAddress, address stableTokenAddress) {
         _setAssetNFT(assetNFTAddress);
@@ -30,7 +30,7 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of a setter for the asset NFT contract
-     * @param assetNFTAddress Address of the asset NFT contract
+     * @param assetNFTAddress, Address of the asset NFT contract
      */
     function setAssetNFT(address assetNFTAddress) external onlyOwner {
         _setAssetNFT(assetNFTAddress);
@@ -38,7 +38,7 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of a setter for the ERC20 token
-     * @param stableTokenAddress Address of the stableToken (ERC20) contract
+     * @param stableTokenAddress, Address of the stableToken (ERC20) contract
      */
     function setStableToken(address stableTokenAddress) external onlyOwner {
         _setStableToken(stableTokenAddress);
@@ -46,11 +46,10 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of the function used to buy Asset NFT
-     * @param assetNumber Uint unique number of the Asset NFT
+     * @param assetNumber, Uint unique number of the Asset NFT
      */
     function buy(uint assetNumber) external {
         address assetOwner = _assetNFT.ownerOf(assetNumber);
-        require(assetOwner != address(0), "Asset does not exist");
         uint amount = _assetNFT.calculateReserveAmount(assetNumber);
         _assetNFT.safeTransferFrom(assetOwner, msg.sender, assetNumber);
         require(
@@ -61,7 +60,7 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of the function used to disburse money
-     * @param assetNumber Uint unique number of the Asset NFT
+     * @param assetNumber, Uint unique number of the Asset NFT
      * @return int Required amount to be paid
      */
     function disburse(uint assetNumber) external view returns (int) {
@@ -107,7 +106,7 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of a setter for the asset NFT contract
-     * @param newAssetNFTAddress Address of the asset NFT contract
+     * @param newAssetNFTAddress, Address of the asset NFT contract
      */
     function _setAssetNFT(address newAssetNFTAddress) private {
         address oldAssetNFTAddress = address(_assetNFT);
@@ -117,7 +116,7 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
 
     /**
      * @dev Implementation of a setter for the ERC20 token
-     * @param stableTokenAddress Address of the stableToken (ERC20) contract
+     * @param stableTokenAddress, Address of the stableToken (ERC20) contract
      */
     function _setStableToken(address stableTokenAddress) private {
         _stableToken = Token(stableTokenAddress);

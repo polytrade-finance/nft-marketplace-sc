@@ -28,6 +28,6 @@ module.exports = {
     },
   },
   gasReporter: {
-    enabled: true,
+    enabled: CONSTANTS.GAS_REPORTER,
   },
 };

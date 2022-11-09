@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const GAS_REPORTER = process.env.GAS_REPORTER || true;
 const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || '';
 const ACCOUNT_PRIVATE_KEY =
   process.env.ACCOUNT_PRIVATE_KEY ||
@@ -19,6 +20,7 @@ const NFT_CONTRACT_ADDRESS =
   '0xfad00BE06BDFB2D245Fc307260BfefE87988Fee4';
 
 const CONSTANTS = {
+  GAS_REPORTER,
   MUMBAI_RPC_URL,
   ACCOUNT_PRIVATE_KEY,
   MUMBAI_API_KEY,
