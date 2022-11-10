@@ -8,9 +8,12 @@ const { getCase } = require('../configs/data.js');
 describe('Marketplace', function () {
   const _criticalCaseNumber = 10;
   const _assetNumber = 0;
+  const _assetNumber_1 = 1;
+  const _assetNumber_2 = 2;
+  const _assetNumber_3 = 3;
   const _invalidAssetNumber = 999;
 
-  const _totalSupply = 1000000;
+  const _totalSupply = 1000000000;
 
   async function deploy() {
     const [owner, otherAddress] = await hre.ethers.getSigners();
@@ -165,6 +168,77 @@ describe('Marketplace', function () {
           await marketplace.connect(otherAddress).buy(_assetNumber);
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(
+            otherAddress.address,
+          );
+        }
+      });
+
+      it('Buy multiple assets from marketplace', async function () {
+        const { nft, owner, usdt, otherAddress, marketplace } =
+          await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          // Create, approve and calculate amount the 1st asset
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+          await nft.approve(marketplace.address, _assetNumber);
+          const _amount = await nft.calculateReserveAmount(_assetNumber);
+
+          // Create, approve and calculate amount the 2nd asset
+          await nft.createAsset(
+            owner.address,
+            _assetNumber_1,
+            _initialMetadata,
+          );
+          await nft.approve(marketplace.address, _assetNumber_1);
+          const _amount_1 = await nft.calculateReserveAmount(_assetNumber_1);
+
+          // Create, approve and calculate amount the 3rd asset
+          await nft.createAsset(
+            owner.address,
+            _assetNumber_2,
+            _initialMetadata,
+          );
+          await nft.approve(marketplace.address, _assetNumber_2);
+          const _amount_2 = await nft.calculateReserveAmount(_assetNumber_2);
+
+          // Create, approve and calculate amount the 4th asset
+          await nft.createAsset(
+            owner.address,
+            _assetNumber_3,
+            _initialMetadata,
+          );
+          await nft.approve(marketplace.address, _assetNumber_3);
+          const _amount_3 = await nft.calculateReserveAmount(_assetNumber_3);
+
+          // Approve the total amount for all invoices
+          const _totalAmount = _amount + _amount_1 + _amount_2 + _amount_3;
+          await usdt
+            .connect(otherAddress)
+            .approve(marketplace.address, _totalAmount);
+
+          const _assetNumbers = [
+            _assetNumber,
+            _assetNumber_1,
+            _assetNumber_2,
+            _assetNumber_3,
+          ];
+
+          await marketplace.connect(otherAddress).buyMultiple(_assetNumbers);
+
+          expect(await nft.ownerOf(_assetNumber)).to.equal(
+            otherAddress.address,
+          );
+          expect(await nft.ownerOf(_assetNumber_1)).to.equal(
+            otherAddress.address,
+          );
+          expect(await nft.ownerOf(_assetNumber_2)).to.equal(
+            otherAddress.address,
+          );
+          expect(await nft.ownerOf(_assetNumber_3)).to.equal(
             otherAddress.address,
           );
         }
