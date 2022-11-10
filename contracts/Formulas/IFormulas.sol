@@ -77,7 +77,7 @@ interface IFormulas {
      * @dev Calculate the invoice tenure: (Due Date - Invoice Date)
      * @return uint Invoice Tenure
      * @param _dueDate, uint input from user
-     * @param _invoiceDate, uint4 input from user
+     * @param _invoiceDate, uint input from user
      */
     function invoiceTenureCalculation(uint _dueDate, uint _invoiceDate)
         external

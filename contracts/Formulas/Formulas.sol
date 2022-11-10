@@ -15,9 +15,9 @@ contract Formulas is IFormulas {
      * @dev Calculate the discount amount:
      * (Discount Fee (%) * (Advanced Amount / 365) * (Finance Tenure - Late Days))
      * @return uint Amount of the Discount
-     * @param discountFee, uint24 input from user
-     * @param financeTenure, uint16 input from user
-     * @param lateDays, uint16 calculated based on user inputs
+     * @param discountFee, uint input from user
+     * @param financeTenure, uint input from user
+     * @param lateDays, uint calculated based on user inputs
      * @param advancedAmount, uint calculated based on user inputs
      */
     function discountAmountCalculation(
@@ -35,7 +35,7 @@ contract Formulas is IFormulas {
      * @dev Calculate the advanced amount: (Invoice Limit * Advance Ratio)
      * @return uint Advanced Amount
      * @param invoiceLimit, uint input from user
-     * @param advanceRatio, uint16 input from user
+     * @param advanceRatio, uint input from user
      */
     function advancedAmountCalculation(uint invoiceLimit, uint advanceRatio)
         external
@@ -49,7 +49,7 @@ contract Formulas is IFormulas {
      * @dev Calculate the factoring amount: (Invoice Amount * Factoring Fee)
      * @return uint Factoring Amount
      * @param invoiceAmount, uint input from user
-     * @param factoringFee, uint24 input from user
+     * @param factoringFee, uint input from user
      */
     function factoringAmountCalculation(uint invoiceAmount, uint factoringFee)
         external
@@ -62,8 +62,8 @@ contract Formulas is IFormulas {
     /**
      * @dev Calculate the late amount: (Late Fee (%) * (Advanced Amount / 365) * Late Days)
      * @return uint Late Amount
-     * @param lateFee, uint24 input from user
-     * @param lateDays, uint16 calculated based on user inputs
+     * @param lateFee, uint input from user
+     * @param lateDays, uint calculated based on user inputs
      * @param advancedAmount, uint calculated based on user inputs
      */
     function lateAmountCalculation(
@@ -77,10 +77,10 @@ contract Formulas is IFormulas {
     /**
      * @dev Calculate the number of late days: (Payment Receipt Date - Due Date - Grace Period)
      * @notice Number of late days will never be less than ‘0’
-     * @return uint16 Number of Late Days
-     * @param paymentReceiptDate, uint48 input from user or can be set automatically
-     * @param dueDate, uint48 input from user
-     * @param gracePeriod, uint16 input from user
+     * @return uint Number of Late Days
+     * @param paymentReceiptDate, uint input from user or can be set automatically
+     * @param dueDate, uint input from user
+     * @param gracePeriod, uint input from user
      */
     function lateDaysCalculation(
         uint paymentReceiptDate,
@@ -95,9 +95,9 @@ contract Formulas is IFormulas {
 
     /**
      * @dev Calculate the invoice tenure: (Due Date - Invoice Date)
-     * @return uint16 Invoice Tenure
-     * @param dueDate, uint48 input from user
-     * @param invoiceDate, uint48 input from user
+     * @return uint Invoice Tenure
+     * @param dueDate, uint input from user
+     * @param invoiceDate, uint input from user
      */
     function invoiceTenureCalculation(uint dueDate, uint invoiceDate)
         external
@@ -123,9 +123,9 @@ contract Formulas is IFormulas {
 
     /**
      * @dev Calculate the finance tenure: (Payment Receipt Date - Date of Funds Advanced)
-     * @return uint16 Finance Tenure
-     * @param paymentReceiptDate, uint48 input from user
-     * @param fundsAdvancedDate, uint48 input from user
+     * @return uint Finance Tenure
+     * @param paymentReceiptDate, uint input from user
+     * @param fundsAdvancedDate, uint input from user
      */
     function financeTenureCalculation(
         uint paymentReceiptDate,
@@ -159,7 +159,7 @@ contract Formulas is IFormulas {
      * @return uint Net Amount Payable to the Client
      * @param totalAmountReceived, uint calculated based on user inputs
      * @param advancedAmount, uint calculated based on user inputs
-     * @param totalFees, uint24 calculated based on user inputs
+     * @param totalFees, uint calculated based on user inputs
      */
     function netAmountPayableToClientCalculation(
         uint totalAmountReceived,
