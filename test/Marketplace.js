@@ -156,7 +156,7 @@ describe('Marketplace', function () {
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
 
-          const _amount = nft.calculateReserveAmount(_assetNumber);
+          const _amount = await nft.calculateReserveAmount(_assetNumber);
 
           await usdt
             .connect(otherAddress)
@@ -300,6 +300,26 @@ describe('Marketplace', function () {
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
+
+          await expect(
+            marketplace.connect(otherAddress).buy(_assetNumber),
+          ).to.be.rejectedWith('ERC20: insufficient allowance');
+        }
+      });
+
+      it('Buy an asset with no enough stable coin allowance', async function () {
+        const { nft, usdt, owner, otherAddress, marketplace } =
+          await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+          await nft.approve(marketplace.address, _assetNumber);
+
+          await usdt.connect(otherAddress).approve(marketplace.address, 1);
 
           await expect(
             marketplace.connect(otherAddress).buy(_assetNumber),
