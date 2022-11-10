@@ -227,7 +227,7 @@ describe('Marketplace', function () {
             _assetNumber_3,
           ];
 
-          await marketplace.connect(otherAddress).buyMultiple(_assetNumbers);
+          await marketplace.connect(otherAddress).batchBuy(_assetNumbers);
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(
             otherAddress.address,

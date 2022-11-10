@@ -61,15 +61,8 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
     /**
      * @dev Implementation of the function used to buy multiple Asset NFT at once
      * @param assetNumbers, Array of uint unique numbers of the Asset NFTs
-     * 375166
-     * 375105
-     * 375105
-     * 375100
-     * 374828
      */
-    function buyMultiple(uint[] calldata assetNumbers) external {
-        // uint length = assetNumbers.length;
-        // uint counter = 0;
+    function batchBuy(uint[] calldata assetNumbers) external {
         uint amount;
         address assetOwner;
         for (uint counter = 0; counter < assetNumbers.length; ) {
