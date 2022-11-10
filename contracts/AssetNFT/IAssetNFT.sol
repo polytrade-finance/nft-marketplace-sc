@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity =0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -130,7 +130,7 @@ interface IAssetNFT is IERC721 {
     function createAsset(
         address receiver,
         uint assetNumber,
-        InitialMetadata memory initialMetadata
+        InitialMetadata calldata initialMetadata
     ) external;
 
     /**

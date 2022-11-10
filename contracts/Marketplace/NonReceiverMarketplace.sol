@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
-
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+pragma solidity =0.8.17;
 
 /**
  * @title The common marketplace for the AssetNFTs
