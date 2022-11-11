@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/polytrade-finance/nft-marketplace-sc/badge.svg?branch=dev)](https://coveralls.io/github/polytrade-finance/nft-marketplace-sc?branch=dev)
+
 # Sample Hardhat Project
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
