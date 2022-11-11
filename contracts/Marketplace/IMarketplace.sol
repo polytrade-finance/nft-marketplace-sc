@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
-
-import "../AssetNFT/IAssetNFT.sol";
-import "../Token/Token.sol";
+pragma solidity =0.8.17;
 
 /**
  * @title The main interface to define the main marketplace
@@ -11,40 +8,52 @@ import "../Token/Token.sol";
  */
 interface IMarketplace {
     /**
-     * @dev Emitted when new `_newAssetNFT` contract has been set instead of `_oldAssetNFT`
-     * @param _oldAssetNFT The old address of asset NFT contract token
-     * @param _newAssetNFT The new address of asset NFT contract token
+     * @dev Emitted when new `newAssetNFT` contract has been set instead of `oldAssetNFT`
+     * @param oldAssetNFT, Old address of asset NFT contract token
+     * @param newAssetNFT, New address of asset NFT contract token
      */
-    event AssetNFTSet(address _oldAssetNFT, address _newAssetNFT);
+    event AssetNFTSet(address oldAssetNFT, address newAssetNFT);
 
     /**
-     * @dev Emitted when new `_stableToken` contract has been set
-     * @param _stableToken The address of ERC20 contract token
+     * @dev Emitted when new `stableToken` contract has been set
+     * @param stableToken, Address of ERC20 contract token
      */
-    event StableTokenSet(address _stableToken);
+    event StableTokenSet(address stableToken);
 
     /**
      * @dev Implementation of a setter for the asset NFT contract
-     * @param _assetNFTAddress The address of the asset NFT contract
+     * @param assetNFTAddress, Address of the asset NFT contract
      */
-    function setAssetNFT(address _assetNFTAddress) external;
+    function setAssetNFT(address assetNFTAddress) external;
 
     /**
      * @dev Implementation of a setter for the ERC20 token
-     * @param _stableTokenAddress The address of the stableToken (ERC20) contract
+     * @param stableTokenAddress, Address of the stableToken (ERC20) contract
      */
-    function setStableToken(address _stableTokenAddress) external;
+    function setStableToken(address stableTokenAddress) external;
 
     /**
      * @dev Implementation of the function used to buy Asset NFT
-     * @param _assetNumber The uint unique number of the Asset NFT
+     * @param assetNumber, Uint unique number of the Asset NFT
      */
-    function buy(uint _assetNumber) external;
+    function buy(uint assetNumber) external;
 
     /**
-     * @dev Implementation of the function used to disbuse money
-     * @param _assetNumber The uint unique number of the Asset NFT
-     * @return int the required amount to be paied
+     * @dev Implementation of the function used to disburse money
+     * @param assetNumber, Uint unique number of the Asset NFT
+     * @return int Required amount to be paid
      */
-    function disburse(uint _assetNumber) external view returns (int);
+    function disburse(uint assetNumber) external returns (int);
+
+    /**
+     * @dev Implementation of a getter for the asset NFT contract
+     * @return address Address of the asset NFT contract
+     */
+    function getAssetNFT() external view returns (address);
+
+    /**
+     * @dev Implementation of a getter for the stable coin contract
+     * @return address Address of the stable coin contract
+     */
+    function getStableCoin() external view returns (address);
 }

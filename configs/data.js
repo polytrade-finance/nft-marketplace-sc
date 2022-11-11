@@ -369,6 +369,19 @@ const _paymentReserveDate = [
   '2023-02-15',
   '2023-02-15', // Error test case value
 ];
+const _amountSentToLender = [
+  '0.0',
+  '0.0',
+  '2000.0',
+  '2000.0',
+  '5000.0',
+  '0.0',
+  '0.0',
+  '500.0',
+  '5921.0',
+  '7200.0',
+  '7200.0', // Error test case value
+];
 const _totalAmountReceived = [
   '10000.0',
   '9000.0',
@@ -472,11 +485,15 @@ exports.getCase = function getCase(caseNumber) {
       _supplierAmountReceived[caseNumber],
       _decimals,
     ),
-    supplierAmountReserved: hre.ethers.utils.parseUnits(
+    reservePaidToSupplier: hre.ethers.utils.parseUnits(
       _supplierAmountReserved[caseNumber],
       _decimals,
     ),
     reservePaymentTransactionId: _reservePaymentTransactionId[caseNumber],
+    amountSentToLender: hre.ethers.utils.parseUnits(
+      _amountSentToLender[caseNumber],
+      _decimals,
+    ),
     totalAmountReceived: hre.ethers.utils.parseUnits(
       _totalAmountReceived[caseNumber],
       _decimals,
@@ -516,8 +533,9 @@ exports.getValues = function getValues(caseNumber) {
     netAmountPayableToClient: _netAmountPayableToClient[caseNumber],
     buyerAmountReceived: _buyerAmountReceived[caseNumber],
     supplierAmountReceived: _supplierAmountReceived[caseNumber],
-    supplierAmountReserved: _supplierAmountReserved[caseNumber],
+    reservePaidToSupplier: _supplierAmountReserved[caseNumber],
     reservePaymentTransactionId: _reservePaymentTransactionId[caseNumber],
+    amountSentToLender: _amountSentToLender[caseNumber],
     totalAmountReceived: _totalAmountReceived[caseNumber],
     shortExcessPaymentReceived: _shortExcessPaymentReceived[caseNumber],
   };

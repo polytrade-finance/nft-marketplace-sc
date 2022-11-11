@@ -8,6 +8,7 @@ const { getCase } = require('../configs/data.js');
 describe('Marketplace', function () {
   const _criticalCaseNumber = 10;
   const _assetNumber = 0;
+  const _invalidAssetNumber = 999;
 
   const _totalSupply = 1000000;
 
@@ -75,7 +76,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -97,7 +98,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -122,7 +123,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -148,14 +149,14 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
 
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
 
-          const _amount = nft.calculateReserveAmount(_assetNumber);
+          const _amount = await nft.calculateReserveAmount(_assetNumber);
 
           await usdt
             .connect(otherAddress)
@@ -175,14 +176,36 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
-          expect(await marketplace.disburse(_assetNumber)).to.equal(
+          const disbursedAmount = await marketplace.disburse(_assetNumber);
+
+          expect(disbursedAmount).to.equal(
             await nft.calculateNetAmountPayableToClient(_assetNumber),
           );
         }
+      });
+
+      it('Set asset NFT address', async function () {
+        const { nft, marketplace } = await loadFixture(deploy);
+
+        await marketplace.setAssetNFT(nft.address);
+
+        const assetNFTAddress = await marketplace.getAssetNFT();
+
+        expect(assetNFTAddress).to.equal(nft.address);
+      });
+
+      it('Set stable token address', async function () {
+        const { usdt, marketplace } = await loadFixture(deploy);
+
+        await marketplace.setStableToken(usdt.address);
+
+        const stableTokenAddress = await marketplace.getStableCoin();
+
+        expect(stableTokenAddress).to.equal(usdt.address);
       });
     });
 
@@ -195,7 +218,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -221,7 +244,7 @@ describe('Marketplace', function () {
         if (_caseNumber === _criticalCaseNumber) {
           await expect(
             nft.createAsset(owner.address, _assetNumber, _initialMetadata),
-          ).to.be.rejectedWith('Asset due less than 20 days');
+          ).to.be.rejectedWith('Asset due within 20 days');
         } else {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
 
@@ -232,6 +255,75 @@ describe('Marketplace', function () {
           ).to.be.rejectedWith(
             'ERC721: caller is not token owner nor approved',
           );
+        }
+      });
+
+      it('Set asset NFT address', async function () {
+        const { otherAddress, nft, marketplace } = await loadFixture(deploy);
+
+        await expect(
+          marketplace.connect(otherAddress).setAssetNFT(nft.address),
+        ).to.be.rejectedWith('Ownable: caller is not the owner');
+      });
+
+      it('Set stable token address', async function () {
+        const { otherAddress, usdt, marketplace } = await loadFixture(deploy);
+
+        await expect(
+          marketplace.connect(otherAddress).setStableToken(usdt.address),
+        ).to.be.rejectedWith('Ownable: caller is not the owner');
+      });
+
+      it('Buy an asset NFT that not minted', async function () {
+        const { nft, owner, marketplace } = await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          await expect(marketplace.buy(_invalidAssetNumber)).to.be.rejectedWith(
+            'ERC721: invalid token ID',
+          );
+        }
+      });
+
+      it('Buy an asset with no stable coin allowance', async function () {
+        const { nft, owner, otherAddress, marketplace } = await loadFixture(
+          deploy,
+        );
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+          await nft.approve(marketplace.address, _assetNumber);
+
+          await expect(
+            marketplace.connect(otherAddress).buy(_assetNumber),
+          ).to.be.rejectedWith('ERC20: insufficient allowance');
+        }
+      });
+
+      it('Buy an asset with no enough stable coin allowance', async function () {
+        const { nft, usdt, owner, otherAddress, marketplace } =
+          await loadFixture(deploy);
+
+        if (_caseNumber === _criticalCaseNumber) {
+          await expect(
+            nft.createAsset(owner.address, _assetNumber, _initialMetadata),
+          ).to.be.rejectedWith('Asset due within 20 days');
+        } else {
+          await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
+          await nft.approve(marketplace.address, _assetNumber);
+
+          await usdt.connect(otherAddress).approve(marketplace.address, 1);
+
+          await expect(
+            marketplace.connect(otherAddress).buy(_assetNumber),
+          ).to.be.rejectedWith('ERC20: insufficient allowance');
         }
       });
     });

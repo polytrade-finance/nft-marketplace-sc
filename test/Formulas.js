@@ -21,7 +21,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scDiscountAmount = hre.ethers.utils.formatUnits(
-          await formulas.discountAmount(
+          await formulas.discountAmountCalculation(
             getCase(index).discountFee,
             getCase(index).financeTenure,
             getCase(index).numberOfLateDays,
@@ -37,7 +37,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scLateDays = hre.ethers.utils.formatUnits(
-          await formulas.lateDays(
+          await formulas.lateDaysCalculation(
             getCase(index).paymentReceiptDate,
             getCase(index).dueDate,
             getCase(index).gracePeriod,
@@ -55,7 +55,7 @@ describe('Formulas', function () {
         const lateDays = '0';
 
         const scLateDays = hre.ethers.utils.formatUnits(
-          await formulas.lateDays(
+          await formulas.lateDaysCalculation(
             paymentReceiptDate,
             getCase(index).dueDate,
             getCase(index).gracePeriod,
@@ -70,7 +70,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scLateAmount = hre.ethers.utils.formatUnits(
-          await formulas.lateAmount(
+          await formulas.lateAmountCalculation(
             getCase(index).lateFee,
             getCase(index).numberOfLateDays,
             getCase(index).advancedAmount,
@@ -85,7 +85,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scAdvancedAmount = hre.ethers.utils.formatUnits(
-          await formulas.advancedAmount(
+          await formulas.advancedAmountCalculation(
             getCase(index).invoiceLimit,
             getCase(index).advanceRatio,
           ),
@@ -99,7 +99,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scFactoringAmount = hre.ethers.utils.formatUnits(
-          await formulas.factoringAmount(
+          await formulas.factoringAmountCalculation(
             getCase(index).invoiceAmount,
             getCase(index).factoringFee,
           ),
@@ -113,7 +113,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scInvoiceTenure = hre.ethers.utils.formatUnits(
-          await formulas.invoiceTenure(
+          await formulas.invoiceTenureCalculation(
             getCase(index).dueDate,
             getCase(index).invoiceDate,
           ),
@@ -127,7 +127,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scReserveAmount = hre.ethers.utils.formatUnits(
-          await formulas.reserveAmount(
+          await formulas.reserveAmountCalculation(
             getCase(index).invoiceAmount,
             getCase(index).advancedAmount,
           ),
@@ -141,7 +141,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scFinanceTenure = hre.ethers.utils.formatUnits(
-          await formulas.financeTenure(
+          await formulas.financeTenureCalculation(
             getCase(index).paymentReceiptDate,
             getCase(index).fundsAdvancedDate,
           ),
@@ -155,7 +155,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scTotalFees = hre.ethers.utils.formatUnits(
-          await formulas.totalFees(
+          await formulas.totalFeesCalculation(
             getCase(index).factoringAmount,
             getCase(index).discountAmount,
             getCase(index).additionalFee,
@@ -171,7 +171,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scNetAmountPayableToClient = hre.ethers.utils.formatUnits(
-          await formulas.netAmountPayableToClient(
+          await formulas.netAmountPayableToClientCalculation(
             getCase(index).totalAmountReceived,
             getCase(index).advancedAmount,
             getCase(index).totalFee,
@@ -188,7 +188,7 @@ describe('Formulas', function () {
         const { formulas } = await loadFixture(deploy);
 
         const scTotalAmountReceived = hre.ethers.utils.formatUnits(
-          await formulas.totalAmountReceived(
+          await formulas.totalAmountReceivedCalculation(
             getCase(index).buyerAmountReceived,
             getCase(index).supplierAmountReceived,
           ),
