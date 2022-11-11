@@ -59,6 +59,31 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
     }
 
     /**
+     * @dev Implementation of the function used to buy multiple Asset NFT at once
+     * @param assetNumbers, Array of uint unique numbers of the Asset NFTs
+     */
+    function batchBuy(uint[] calldata assetNumbers) external {
+        uint amount;
+        address assetOwner;
+        for (uint counter = 0; counter < assetNumbers.length; ) {
+            amount = _assetNFT.calculateReserveAmount(assetNumbers[counter]);
+            assetOwner = _assetNFT.ownerOf(assetNumbers[counter]);
+            _assetNFT.safeTransferFrom(
+                assetOwner,
+                msg.sender,
+                assetNumbers[counter]
+            );
+            require(
+                _stableToken.transferFrom(msg.sender, assetOwner, amount),
+                "Transfer failed"
+            );
+            unchecked {
+                counter++;
+            }
+        }
+    }
+
+    /**
      * @dev Implementation of the function used to disburse money
      * @param assetNumber, Uint unique number of the Asset NFT
      * @return int Required amount to be paid

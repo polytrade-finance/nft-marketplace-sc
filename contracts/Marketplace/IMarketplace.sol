@@ -39,6 +39,12 @@ interface IMarketplace {
     function buy(uint assetNumber) external;
 
     /**
+     * @dev Implementation of the function used to buy multiple Asset NFT at once
+     * @param assetNumbers, Array of uint unique numbers of the Asset NFTs
+     */
+    function batchBuy(uint[] calldata assetNumbers) external;
+
+    /**
      * @dev Implementation of the function used to disburse money
      * @param assetNumber, Uint unique number of the Asset NFT
      * @return int Required amount to be paid
