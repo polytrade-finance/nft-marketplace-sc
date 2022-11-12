@@ -2,6 +2,8 @@
 ![HackenAudits](https://img.shields.io/badge/Hacken-Passed-brightgreen?logo=springsecurity)
 [![Coverage Status](https://coveralls.io/repos/github/polytrade-finance/nft-marketplace-sc/badge.svg?branch=dev)](https://coveralls.io/github/polytrade-finance/nft-marketplace-sc?branch=dev)
 ![Solidity](https://shields.io/badge/solidity-0.8.17-blue?logo=solidity)
+![Hardhat](https://shields.io/badge/hardhat-2.12.0-black?logo=hardhat)
+![NPM](https://shields.io/badge/npm-2.12.0-red?logo=npm)
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
 <div align="center">
