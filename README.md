@@ -5,14 +5,154 @@
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
 <div align="center">
-    <a target="_blank" href="https://polytrade.finance/">
+    <a href="https://polytrade.finance/" target="_blank">
 	    <img src="./assets/polytrade.png" alt="polytrade"/>
     </a>
 </div>
 
 # NFT Marketplace
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project is a marketplace to show NFTs which will be holding details from an asset.
+These will act as a token representing the underlying assets and will allow users to buy RWA in the DeFi space.
+
+## Contracts
+
+### 1) Formulas
+
+Provide external functions to calculate all formulas using a specific asset's parameters.
+
+### 2) AssetNFT
+
+Provide external functions that use a reference to the `Formulas` contract to calculate all formulas using a specific asset's number.
+
+#### Metadata
+
+```
+   struct Metadata {
+        uint48 paymentReceiptDate;
+        uint48 paymentReserveDate;
+        uint buyerAmountReceived;
+        uint supplierAmountReceived;
+        uint reservePaidToSupplier;
+        uint reservePaymentTransactionId;
+        uint amountSentToLender;
+        InitialMetadata initialMetadata;
+    }
+```
+
+#### InitialMetadata
+
+```
+   struct InitialMetadata {
+        uint24 factoringFee;
+        uint24 discountFee;
+        uint24 lateFee;
+        uint24 bankChargesFee;
+        uint24 additionalFee;
+        uint16 gracePeriod;
+        uint16 advanceRatio;
+        uint48 dueDate;
+        uint48 invoiceDate;
+        uint48 fundsAdvancedDate;
+        uint invoiceAmount;
+        uint invoiceLimit;
+    }
+```
+
+#### `constructor(string memory name_, string memory symbol_, string memory baseURI_, address formulasAddress_) ERC721(name_, symbol_)` (public)
+
+Implements the `ERC721` constructor, and uses the reference to the `Formulas` contract (`formulasAddress_`).
+It needs the name (`name_`) and symbol (`symbol_`) of the NFT, and the base URI (`baseURI_`) that will be used as an accessor to the asset data location on _IPFS_ server.
+
+#### `createAsset(address receiver, uint assetNumber, InitialMetadata calldata initialMetadata)` (external onlyOwner)
+
+Mint a new asset with a uniq number (`assetNumber`) initiated with metadata (`initialMetadata`) to a specific address (`receiver`)
+
+#### `setFormulas(address formulasAddress)` (external onlyOwner)
+
+Set the private reference of the needed formulas contract
+
+#### `setBaseURI(string calldata newBaseURI)` (external onlyOwner)
+
+Set the private base URI for the assets storage
+
+#### `setAdditionalMetadata(uint assetNumber, uint buyerAmountReceived, uint supplierAmountReceived, uint paymentReceiptDate)` (external onlyOwner)
+
+Set the additional metadata: Payment receipt date & amount paid by buyer & amount paid by supplier
+
+#### `setAssetSettledMetadata(uint assetNumber, uint reservePaidToSupplier, uint reservePaymentTransactionId, uint paymentReserveDate, uint amountSentToLender)` (external onlyOwner)
+
+Set the settlement metadata: reserved payment date & amount sent to supplier & the payment transaction ID & amount sent to lender
+
+#### `getAsset(uint assetNumber)` (external view)
+
+Return the initial metadata for a specific asset (`assetNumber`)
+
+#### `getFormulas()` (external view)
+
+Return the Formulas contract address
+
+#### `getBaseURI()` (external view)
+
+Return the base URI
+
+#### `calculateLateDays(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the number of late days for a specific asset (`assetNumber`)
+
+#### `calculateDiscountAmount(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the discount amount for a specific asset (`assetNumber`)
+
+#### `calculateLateAmount(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the late amount for a specific asset (`assetNumber`)
+
+#### `calculateAdvancedAmount(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the advanced amount for a specific asset (`assetNumber`)
+
+#### `calculateFactoringAmount(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the factoring amount for a specific asset (`assetNumber`)
+
+#### `calculateReserveAmount(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the reserve amount for a specific asset (`assetNumber`)
+
+#### `calculateInvoiceTenure(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the invoice tenure for a specific asset (`assetNumber`)
+
+#### `calculateFinanceTenure(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the finance tenure for a specific asset (`assetNumber`)
+
+#### `calculateTotalFees(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the total fees amount for a specific asset (`assetNumber`)
+
+#### `calculateNetAmountPayableToClient(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the net amount payable to the client for a specific asset (`assetNumber`)
+
+#### `calculateTotalAmountReceived(uint assetNumber)` (external view)
+
+Uses the Formulas contract to calculate the total amount received for a specific asset (`assetNumber`)
+
+#### `tokenURI(uint assetNumber)` (public view virtual override)
+
+Return the storage URI of a specific asset (`assetNumber`)
+
+## Workflow
+
+- Deploy `Formulas` contract.
+- Deploy `AssetNFT` contract using a reference to the deployed `Formulas` contract.
+- Deploy the stable coin `Token` contract.
+- Users should deposit their tokens before or during the staking period
+- Run `Start()` function launch the staking
+- Users can claim their rewards using `claimRewards()`
+- Once staking is over users can withdraw their initial deposit using `withdraw()` (`withdraw()` calls `claimRewards()`)
 
 Try running some of the following tasks:
 
