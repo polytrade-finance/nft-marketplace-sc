@@ -144,6 +144,56 @@ Uses the Formulas contract to calculate the total amount received for a specific
 
 Return the storage URI of a specific asset (`assetNumber`)
 
+### 3) Token
+
+An inheritance of the `ERC20` token, will be used to pay for the asset NFTs.
+
+#### Constructor
+
+Implement the `ERC20` constructor, needs the name (`name_`) and symbol (`symbol_`) of the NFT.
+Will mint a specific amount of tokens (`totalSupply_`) to the receiver address (`receiver_`)
+
+```
+   constructor(
+        string memory name_,
+        string memory symbol_,
+        address receiver_,
+        uint totalSupply_
+    ) ERC20(name_, symbol_)
+```
+
+### 4) Marketplace
+
+Provide external functions that let users to buy a specific asset NFT and pay tokens to this contract.
+
+#### `constructor(address assetNFTAddress, address stableTokenAddress)` (public)
+
+Uses the provided addresses (`assetNFTAddress` & `stableTokenAddress`) to set the references of the asset NFT contract and the stable coin contract.
+
+#### `setAssetNFT(address assetNFTAddress)` (external onlyOwner)
+
+Sets the asset NFT reference address (`assetNFTAddress`) in case of change it.
+
+#### `setStableToken(address stableTokenAddress)` (external onlyOwner)
+
+Sets the stable token reference address (`stableTokenAddress`) in case of change it.
+
+#### `buy(uint assetNumber)` (external)
+
+Lets the users to buy a specific asset NFT (`assetNumber`) and pay stable token for it.
+
+#### `batchBuy(uint[] calldata assetNumbers)` (external)
+
+Lets the users a collection af assets in terms of executing a checkout of multiple NFTs and reducing the transaction fees.
+
+#### `getAssetNFT()` (external view)
+
+Returns the address of the asset NFT reference.
+
+#### `getStableCoin()` (external view)
+
+Returns the address of the stable token reference.
+
 ## Workflow
 
 - Deploy `Formulas` contract.
