@@ -5,7 +5,9 @@
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
 <div align="center">
-	<img src="./assets/polytrade.png" alt="polytrade"/>
+    <a href="https://polytrade.finance/">
+	    <img src="./assets/polytrade.png" alt="polytrade"/>
+    </a>
 </div>
 
 # NFT Marketplace
