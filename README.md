@@ -2,8 +2,9 @@
 ![HackenAudits](https://img.shields.io/badge/Hacken-Passed-brightgreen?logo=springsecurity)
 [![Coverage Status](https://coveralls.io/repos/github/polytrade-finance/nft-marketplace-sc/badge.svg?branch=dev)](https://coveralls.io/github/polytrade-finance/nft-marketplace-sc?branch=dev)
 ![Solidity](https://shields.io/badge/solidity-0.8.17-blue?logo=solidity)
+![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
-# Sample Hardhat Project
+# NFT Marketplace
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
 
