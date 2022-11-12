@@ -196,29 +196,22 @@ Returns the address of the stable token reference.
 
 ## Workflow
 
-- Deploy `Formulas` contract.
-- Deploy `AssetNFT` contract using a reference to the deployed `Formulas` contract.
-- Deploy the stable coin `Token` contract.
-- Users should deposit their tokens before or during the staking period
-- Run `Start()` function launch the staking
-- Users can claim their rewards using `claimRewards()`
-- Once staking is over users can withdraw their initial deposit using `withdraw()` (`withdraw()` calls `claimRewards()`)
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
-
-Steps to deploy and verify:
-
-1- Create Smart Contract
-2- Create deploy.js file
-3- Use `npx hardhat run scripts/scriptName.js --network mumbai` command to run a script on polygon mumbai network
-3- Use `npx hardhat deploy ContractNameIndex --network mumbai` command to run the deployment task on polygon mumbai network
-4- Check network list available to verify from the hardhat framework `npx hardhat verify --list-networks`
-5- Use `npx hardhat verify --contract contracts/SCFileName.sol:SCName --network mumbai SMART_CONTRACT_ADDRESS "Smart Contract Parameter 1" "Smart Contract Parameter 2"` to verify on polygon mumbai network
+- Deploy and verify `Formulas` contract:
+  1. `npx hardhat deploy 3 --network mumbai`
+  2. `npx hardhat verify --contract contracts/Formulas/Formulas.sol:Formulas --network mumbai FORMULAS_CONTRACT_ADDRESS`
+- Deploy and verify `AssetNFT` contract:
+  1. `npx hardhat deploy 0 --network mumbai`
+  2. `npx hardhat verify --contract contracts/AssetNFT/AssetNFT.sol:AssetNFT --network mumbai ASSET_NFT_CONTRACT_ADDRESS "Name" "SYMBOL" "BASE_URI" "FORMULAS_CONTRACT_ADDRESS"`
+- Deploy and verify `Token` contract:
+  1. `npx hardhat deploy 4 --network mumbai`
+  2. `npx hardhat verify --contract contracts/Token/Token.sol:Token --network mumbai TOKEN_CONTRACT_ADDRESS "Name" "SYMBOL" "RECEIVER_ADDRESS" "totalSupply"`
+- Deploy and verify `Marketplace` contract:
+  1. `npx hardhat deploy 1 --network mumbai`
+  2. `npx hardhat verify --contract contracts/Marketplace/Marketplace.sol:Marketplace --network mumbai MARKETPLACE_CONTRACT_ADDRESS "ASSET_NFT_CONTRACT_ADDRESS" "TOKEN_CONTRACT_ADDRESS"`
+- Mint a new asset NFT from `AssetNFT` contract to your first wallet address (`createAsset` function from `AssetNFT` contract)
+- Use the calculation functions to check the asset data
+- Calculate the reserved amount of this asset using `calculateReserveAmount` function and save it as the value of it
+- Approve the created asset to the marketplace contract (`approve` function from `AssetNFT` contract)
+- Transfer some stable tokens to your second wallet address (`transfer` function from `Token` contract)
+- Approve the marketplace for the value of the invoice (`approve` function from `Token` contract)
+- Use your second wallet address to buy this asset (`buy` function from `Marketplace` contract)
