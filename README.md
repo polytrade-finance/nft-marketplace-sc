@@ -4,6 +4,10 @@
 ![Solidity](https://shields.io/badge/solidity-0.8.17-blue?logo=solidity)
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
+<div align="center">
+	<img src="./assets/polytrade.png" alt="polytrade"/>
+</div>
+
 # NFT Marketplace
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
