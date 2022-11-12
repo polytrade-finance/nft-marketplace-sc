@@ -5,7 +5,7 @@
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
 <div align="center">
-    <a href="https://polytrade.finance/">
+    <a target="_blank" href="https://polytrade.finance/">
 	    <img src="./assets/polytrade.png" alt="polytrade"/>
     </a>
 </div>
