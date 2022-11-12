@@ -1,4 +1,5 @@
-[![Coverage Status](https://coveralls.io/repos/github/polytrade-finance/nft-marketplace-sc/badge.svg?branch=features/configure-readme-file)](https://coveralls.io/github/polytrade-finance/nft-marketplace-sc?branch=features/configure-readme-file)
+[![Coverage Status](https://coveralls.io/repos/github/polytrade-finance/nft-marketplace-sc/badge.svg?branch=dev)](https://coveralls.io/github/polytrade-finance/nft-marketplace-sc?branch=dev)
+![Solidity](https://shields.io/badge/solidity-0.8.17-blue?logo=solidity)
 
 # Sample Hardhat Project
 
