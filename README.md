@@ -3,9 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/polytrade-finance/nft-marketplace-sc/badge.svg?branch=dev)](https://coveralls.io/github/polytrade-finance/nft-marketplace-sc?branch=dev)
 ![Solidity](https://shields.io/badge/solidity-0.8.17-blue?logo=solidity)
 ![Hardhat](https://shields.io/badge/hardhat-2.12.0-black?logo=hardhat)
-<a href="https://www.npmjs.com/package/npm/v/8.3.1">
-![NPM](https://shields.io/badge/npm-8.3.1-red?logo=npm)
-</a>
+[![NPM](https://shields.io/badge/npm-8.3.1-red?logo=npm)](https://www.npmjs.com/package/npm/v/8.3.1)
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat)
 
 <div align="center">
