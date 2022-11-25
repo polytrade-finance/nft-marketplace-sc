@@ -38,7 +38,7 @@ describe('Marketplace', function () {
     );
 
     const Marketplace = await hre.ethers.getContractFactory(CONTRACTS.NAMES[1]);
-    const marketplace = await Marketplace.deploy(nft.address, usdt.address);
+    const marketplace = await Marketplace.deploy(nft.address, stable.address);
 
     const NonReceiverMarketplace = await hre.ethers.getContractFactory(
       CONTRACTS.NAMES[2],
@@ -161,7 +161,7 @@ describe('Marketplace', function () {
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
 
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           await stable
@@ -189,7 +189,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -200,7 +200,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -211,7 +211,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve and calculate amount the 4th asset
@@ -222,7 +222,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_3);
           const _amount_3 = Number(
-            await nft.calculateReserveAmount(_assetNumber_3),
+            await nft.calculateAdvancedAmount(_assetNumber_3) * 1E4,
           );
 
           // Approve the total amount for all invoices
@@ -425,7 +425,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -436,7 +436,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -447,7 +447,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve the 4th asset
@@ -458,7 +458,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_3);
           const _amount_3 = Number(
-            await nft.calculateReserveAmount(_assetNumber_3),
+            await nft.calculateAdvancedAmount(_assetNumber_3) * 1E4,
           );
 
           // Approve the total amount for all invoices
@@ -494,7 +494,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -505,7 +505,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -516,7 +516,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve the 4th asset
@@ -560,7 +560,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -571,7 +571,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -582,7 +582,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve the 4th asset
@@ -593,7 +593,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_3);
           const _amount_3 = Number(
-            await nft.calculateReserveAmount(_assetNumber_3),
+            await nft.calculateAdvancedAmount(_assetNumber_3) * 1E4,
           );
 
           // Approve the total amount for all invoices
@@ -650,7 +650,7 @@ describe('Marketplace', function () {
       for (let i = 0; i < _numberOfAssets; i++) {
         await nft.createAsset(owner.address, i, _initialMetadata);
         await nft.approve(marketplace.address, i);
-        const _amount = Number(await nft.calculateReserveAmount(i));
+        const _amount = Number(await nft.calculateAdvancedAmount(i) * 1E4);
         _assetNumbers.push(i);
         _totalAmount += _amount;
       }
