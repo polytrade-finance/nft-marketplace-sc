@@ -51,8 +51,8 @@ contract AssetNFT is ERC721Enumerable, IAssetNFT, Ownable {
         InitialMetadata calldata initialMetadata
     ) external onlyOwner {
         require(
-            ((initialMetadata.dueDate - initialMetadata.fundsAdvancedDate) /
-                1 days) >= 20,
+            initialMetadata.dueDate >
+                initialMetadata.fundsAdvancedDate + 20 days,
             "Asset due within 20 days"
         );
         _metadata[assetNumber].initialMetadata = initialMetadata;

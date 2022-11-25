@@ -17,4 +17,8 @@ contract Token is ERC20 {
     ) ERC20(name_, symbol_) {
         _mint(receiver_, totalSupply_ * 1 ether);
     }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
+    }
 }

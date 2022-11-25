@@ -29,8 +29,8 @@ describe('Marketplace', function () {
       formulas.address,
     );
 
-    const USDT = await hre.ethers.getContractFactory(CONTRACTS.NAMES[4]);
-    const usdt = await USDT.deploy(
+    const Stable = await hre.ethers.getContractFactory(CONTRACTS.NAMES[4]);
+    const stable = await Stable.deploy(
       CONSTANTS.TOKEN_NAME,
       CONSTANTS.TOKEN_SYMBOL,
       otherAddress.address,
@@ -38,7 +38,7 @@ describe('Marketplace', function () {
     );
 
     const Marketplace = await hre.ethers.getContractFactory(CONTRACTS.NAMES[1]);
-    const marketplace = await Marketplace.deploy(nft.address, usdt.address);
+    const marketplace = await Marketplace.deploy(nft.address, stable.address);
 
     const NonReceiverMarketplace = await hre.ethers.getContractFactory(
       CONTRACTS.NAMES[2],
@@ -47,7 +47,7 @@ describe('Marketplace', function () {
 
     return {
       nft,
-      usdt,
+      stable,
       marketplace,
       nonReceiverMarketplace,
       owner,
@@ -147,7 +147,7 @@ describe('Marketplace', function () {
       });
 
       it('Buy an asset from marketplace', async function () {
-        const { nft, owner, usdt, otherAddress, marketplace } =
+        const { nft, owner, stable, otherAddress, marketplace } =
           await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -161,10 +161,10 @@ describe('Marketplace', function () {
           expect(await nft.ownerOf(_assetNumber)).to.equal(owner.address);
 
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
-          await usdt
+          await stable
             .connect(otherAddress)
             .approve(marketplace.address, _amount);
 
@@ -177,7 +177,7 @@ describe('Marketplace', function () {
       });
 
       it('Buy multiple assets from marketplace', async function () {
-        const { nft, owner, usdt, otherAddress, marketplace } =
+        const { nft, owner, stable, otherAddress, marketplace } =
           await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -189,7 +189,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -200,7 +200,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -211,7 +211,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve and calculate amount the 4th asset
@@ -222,12 +222,12 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_3);
           const _amount_3 = Number(
-            await nft.calculateReserveAmount(_assetNumber_3),
+            await nft.calculateAdvancedAmount(_assetNumber_3) * 1E4,
           );
 
           // Approve the total amount for all invoices
           const _totalAmount = _amount + _amount_1 + _amount_2 + _amount_3;
-          await usdt
+          await stable
             .connect(otherAddress)
             .approve(marketplace.address, _totalAmount);
 
@@ -284,13 +284,13 @@ describe('Marketplace', function () {
       });
 
       it('Set stable token address', async function () {
-        const { usdt, marketplace } = await loadFixture(deploy);
+        const { stable, marketplace } = await loadFixture(deploy);
 
-        await marketplace.setStableToken(usdt.address);
+        await marketplace.setStableToken(stable.address);
 
         const stableTokenAddress = await marketplace.getStableCoin();
 
-        expect(stableTokenAddress).to.equal(usdt.address);
+        expect(stableTokenAddress).to.equal(stable.address);
       });
     });
 
@@ -352,10 +352,10 @@ describe('Marketplace', function () {
       });
 
       it('Set stable token address', async function () {
-        const { otherAddress, usdt, marketplace } = await loadFixture(deploy);
+        const { otherAddress, stable, marketplace } = await loadFixture(deploy);
 
         await expect(
-          marketplace.connect(otherAddress).setStableToken(usdt.address),
+          marketplace.connect(otherAddress).setStableToken(stable.address),
         ).to.be.rejectedWith('Ownable: caller is not the owner');
       });
 
@@ -393,7 +393,7 @@ describe('Marketplace', function () {
       });
 
       it('Buy an asset with no enough stable coin allowance', async function () {
-        const { nft, usdt, owner, otherAddress, marketplace } =
+        const { nft, stable, owner, otherAddress, marketplace } =
           await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -404,7 +404,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
 
-          await usdt.connect(otherAddress).approve(marketplace.address, 1);
+          await stable.connect(otherAddress).approve(marketplace.address, 1);
 
           await expect(
             marketplace.connect(otherAddress).buy(_assetNumber),
@@ -413,7 +413,7 @@ describe('Marketplace', function () {
       });
 
       it('Buy multiple assets with invalid asset number', async function () {
-        const { nft, owner, usdt, otherAddress, marketplace } =
+        const { nft, owner, stable, otherAddress, marketplace } =
           await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -425,7 +425,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -436,7 +436,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -447,7 +447,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve the 4th asset
@@ -458,13 +458,13 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_3);
           const _amount_3 = Number(
-            await nft.calculateReserveAmount(_assetNumber_3),
+            await nft.calculateAdvancedAmount(_assetNumber_3) * 1E4,
           );
 
           // Approve the total amount for all invoices
           const _totalAmount = _amount + _amount_1 + _amount_2 + _amount_3;
 
-          await usdt
+          await stable
             .connect(otherAddress)
             .approve(marketplace.address, _totalAmount);
 
@@ -482,7 +482,7 @@ describe('Marketplace', function () {
       });
 
       it('Buy multiple assets without enough allowance', async function () {
-        const { nft, owner, usdt, otherAddress, marketplace } =
+        const { nft, owner, stable, otherAddress, marketplace } =
           await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -494,7 +494,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -505,7 +505,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -516,7 +516,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve the 4th asset
@@ -530,7 +530,7 @@ describe('Marketplace', function () {
           // Approve the total amount for all invoices
           const _totalAmount = _amount + _amount_1 + _amount_2;
 
-          await usdt
+          await stable
             .connect(otherAddress)
             .approve(marketplace.address, _totalAmount);
 
@@ -548,7 +548,7 @@ describe('Marketplace', function () {
       });
 
       it('Buy multiple assets without enough balance', async function () {
-        const { nft, owner, usdt, otherAddress_1, marketplace } =
+        const { nft, owner, stable, otherAddress_1, marketplace } =
           await loadFixture(deploy);
 
         if (_caseNumber === _criticalCaseNumber) {
@@ -560,7 +560,7 @@ describe('Marketplace', function () {
           await nft.createAsset(owner.address, _assetNumber, _initialMetadata);
           await nft.approve(marketplace.address, _assetNumber);
           const _amount = Number(
-            await nft.calculateReserveAmount(_assetNumber),
+            await nft.calculateAdvancedAmount(_assetNumber) * 1E4,
           );
 
           // Create, approve and calculate amount the 2nd asset
@@ -571,7 +571,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_1);
           const _amount_1 = Number(
-            await nft.calculateReserveAmount(_assetNumber_1),
+            await nft.calculateAdvancedAmount(_assetNumber_1) * 1E4,
           );
 
           // Create, approve and calculate amount the 3rd asset
@@ -582,7 +582,7 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_2);
           const _amount_2 = Number(
-            await nft.calculateReserveAmount(_assetNumber_2),
+            await nft.calculateAdvancedAmount(_assetNumber_2) * 1E4,
           );
 
           // Create, approve the 4th asset
@@ -593,13 +593,13 @@ describe('Marketplace', function () {
           );
           await nft.approve(marketplace.address, _assetNumber_3);
           const _amount_3 = Number(
-            await nft.calculateReserveAmount(_assetNumber_3),
+            await nft.calculateAdvancedAmount(_assetNumber_3) * 1E4,
           );
 
           // Approve the total amount for all invoices
           const _totalAmount = _amount + _amount_1 + _amount_2 + _amount_3;
 
-          await usdt
+          await stable
             .connect(otherAddress_1)
             .approve(marketplace.address, _totalAmount);
 
@@ -643,19 +643,19 @@ describe('Marketplace', function () {
 
     it('Buy multiple assets', async function () {
       this.timeout(_timeout);
-      const { nft, owner, usdt, otherAddress, marketplace } = await loadFixture(
+      const { nft, owner, stable, otherAddress, marketplace } = await loadFixture(
         deploy,
       );
 
       for (let i = 0; i < _numberOfAssets; i++) {
         await nft.createAsset(owner.address, i, _initialMetadata);
         await nft.approve(marketplace.address, i);
-        const _amount = Number(await nft.calculateReserveAmount(i));
+        const _amount = Number(await nft.calculateAdvancedAmount(i) * 1E4);
         _assetNumbers.push(i);
         _totalAmount += _amount;
       }
 
-      await usdt
+      await stable
         .connect(otherAddress)
         .approve(marketplace.address, _totalAmount);
 

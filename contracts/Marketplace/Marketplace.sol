@@ -50,7 +50,8 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
      */
     function buy(uint assetNumber) external {
         address assetOwner = _assetNFT.ownerOf(assetNumber);
-        uint amount = _assetNFT.calculateReserveAmount(assetNumber);
+        uint amount = _assetNFT.calculateAdvancedAmount(assetNumber) *
+            (10**(_stableToken.decimals() - 2));
         _assetNFT.safeTransferFrom(assetOwner, msg.sender, assetNumber);
         require(
             _stableToken.transferFrom(msg.sender, assetOwner, amount),
@@ -65,8 +66,11 @@ contract Marketplace is IERC721Receiver, Ownable, IMarketplace {
     function batchBuy(uint[] calldata assetNumbers) external {
         uint amount;
         address assetOwner;
+        uint decimals = (_stableToken.decimals() - 2);
         for (uint counter = 0; counter < assetNumbers.length; ) {
-            amount = _assetNFT.calculateReserveAmount(assetNumbers[counter]);
+            amount =
+                _assetNFT.calculateAdvancedAmount(assetNumbers[counter]) *
+                (10**decimals);
             assetOwner = _assetNFT.ownerOf(assetNumbers[counter]);
             _assetNFT.safeTransferFrom(
                 assetOwner,
